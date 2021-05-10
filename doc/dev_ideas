@@ -1,0 +1,42 @@
+Util:
+  jewelbutton.h
+    JewelButton类
+      改变了外观的QPushButton，比较美观的按钮
+  jewel.h
+    JewelWidget类
+      继承字QWidget，一个宝石，可发出Swap（left right up down）信号
+
+src:
+  mainwindow.h
+    MainWindow类
+      处理设置，高分榜等，游戏开始后绘制一个棋盘、分数显示器、以及各个宝石。捕捉JewelWidget类的信号，调用GameState的Swap函数，获得list<BoardEvent>，
+据此绘制动画（在此过程中忽略其他Jewel发出的SIGNAL）。
+  
+  gamestate.h
+    HighScoresStorage类
+      高分榜存储
+    GameSettings类
+      一个Struct，存储游戏模式，难度
+    GameState类
+      包含MainWindow能调用的接口，保存高分榜，GameSettings，暂停状态，Game类。
+      
+  board.h
+    BoardEvent类
+      表示传递的信息：某些地方新增了Jewel;某些地方的Jewel下落到某些地方;某些地方的Jewel消失
+    Board类
+      封装的数组保存宝石状态，同时保存临时状态（用于类内部计算）和稳定状态。可以提供swap函数，若经check可交换则计算出会发生的事，
+返回list<BoardEvent>给上层，依次传递给UI，同时更新储存的宝石状态。
+      
+  game.h
+    Game类
+      包含Board类，及游戏逻辑类，ScoreSystem类
+      
+  scoresystem.h
+    ScoreSystem类
+      Game类处理获得的BoardEvent时将有关信息传给ScoreSystem类进行单独的分数处理，方便扩展不同的得分模式
+      
+  modelogic.h
+    ModeLogic类（纯虚类）
+      提供控制宝石生成以及游戏流程的接口
+    TimeOutMode FastReactionMode 类实现ModeLogic类
+      分别实现两种游戏模式
