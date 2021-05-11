@@ -18,11 +18,11 @@ JewelButton::JewelButton(QWidget *parent) :
 
 void JewelButton::paintEvent(QPaintEvent* event)
 {
-	static const QIcon red (QPixmap("D:/Bejeweled0/res/red.png"));
-	static const QIcon yellow (QPixmap("D:/Bejeweled0/res/yellow.png"));
-	static const QIcon orange (QPixmap("D:/Bejeweled0/res/orange.png"));
-	static const QIcon green (QPixmap("D:/Bejeweled0/res/green.png"));
-	static const QIcon blue (QPixmap("D:/Bejeweled0/res/blue.png"));
+	static const QIcon red (QPixmap("D:/Bejeweled00/res/red.png"));
+	static const QIcon yellow (QPixmap("D:/Bejeweled00/res/yellow.png"));
+	static const QIcon orange (QPixmap("D:/Bejeweled00/res/orange.png"));
+	static const QIcon green (QPixmap("D:/Bejeweled00/res/green.png"));
+	static const QIcon blue (QPixmap("D:/Bejeweled00/res/blue.png"));
 	QPushButton::paintEvent(event);
 	// simple implementation by randomizing icon
 	srand(time(nullptr));

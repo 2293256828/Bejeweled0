@@ -35,7 +35,7 @@ public:
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
 //        QPalette palette;  //创建一个调色板的对象
 //        QPixmap pixmap;
-//        pixmap.load("D:/Bejeweled0/res/bg.png");
+//        pixmap.load("D:/Bejeweled00/res/bg.png");
 //        palette.setBrush(centralWidget->backgroundRole(), QBrush(pixmap));
 //        centralWidget->setPalette(palette);
         MainWindow->setCentralWidget(centralWidget);

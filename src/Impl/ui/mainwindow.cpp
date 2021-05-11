@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
         hintPos(0, 0)
 {
 	ui->setupUi(this);
-	setWindowIcon(QIcon(QPixmap("D:/Bejeweled0/res/green.png")));
+	setWindowIcon(QIcon(QPixmap("D:/Bejeweled00/res/green.png")));
     gameState = new GameState();
 	connect(gameState, SIGNAL(gameEnd(bool)), this, SLOT(gameEnd(bool)));
 
@@ -45,7 +45,7 @@ void MainWindow::startHome()
     currentFrame = new QFrame(this);
     QPalette palette;  //创建一个调色板的对象
     QPixmap pixmap;
-    pixmap.load("D:/Bejeweled0/res/bg.png");
+    pixmap.load("D:/Bejeweled00/res/bg.png");
     palette.setBrush(backgroundRole(), QBrush(pixmap));
     setPalette(palette);
 	setCentralWidget(currentFrame);
@@ -64,19 +64,22 @@ void MainWindow::startHome()
 	QObject::connect(score_button,SIGNAL(clicked()),this,SLOT(scoreClicked()));
 }
 
-void MainWindow::hintProcessor(JewelPos pos)
+void MainWindow::updateHint(JewelPos pos)
 {
     hintPos = pos;
 }
 
-void MainWindow::showHint()
-{
+void MainWindow::hintClicked()
+{   if(gameState->state()!=GameState::INGAME){return;}
+    uiDrawing= true;
+    pauseButton->setEnabled(false);
+    hintButton->setEnabled(false);
 	Jewel *widget = map_[hintPos.x][hintPos.y].second;
 	int ox=widget->x(), oy = widget->y();
-
 	// the animation
+    gameState->Punish(2);
 	auto *animation = new QPropertyAnimation(widget,"geometry");
-	animation->setDuration(100);
+	animation->setDuration(200);
 	// start from a bigger Jewel
 	animation->setStartValue((QRect(ox-kJewelWidgetSize/2,oy-kJewelWidgetSize/2,kJewelWidgetSize*2,kJewelWidgetSize*2)));
 	// resize to normal size
@@ -86,9 +89,11 @@ void MainWindow::showHint()
         animationDrawing = false;
 	});
 	animation->start();
-
 	while(animationDrawing)
 		QCoreApplication::processEvents(QEventLoop::AllEvents);
+    pauseButton->setEnabled(true);
+    hintButton->setEnabled(true);
+    uiDrawing = false;
 }
 
 void MainWindow::startClicked()
@@ -102,8 +107,7 @@ void MainWindow::scoreClicked()
 	QFont larger_font,smaller_font;
 	larger_font.setPointSize(18);
 	smaller_font.setPointSize(15);
-
-		delete currentFrame;
+	delete currentFrame;
 
 	// set up new frame
 	currentFrame = new QFrame(this);
@@ -140,7 +144,7 @@ void MainWindow::startSelect()
 	currentFrame = new QFrame(this);
     QPalette palette;  //创建一个调色板的对象
     QPixmap pixmap;
-    pixmap.load("D:/Bejeweled0/res/background3.jpg");
+    pixmap.load("D:/Bejeweled00/res/background3.jpg");
     palette.setBrush(backgroundRole(), QBrush(pixmap));
     setPalette(palette);
 	setCentralWidget(currentFrame);
@@ -188,14 +192,18 @@ void MainWindow::startSelect()
  */
 void MainWindow::goClicked()
 {
-	if(modeGroup->checkedId() == 1) {
+	if(modeGroup->checkedId()==1&&pairGroup->checkedId() == 0) {
 		gameState->SetMode(Mode::FAST_REACTION);
-        hint = true;
 	}
-	else {
+    if(modeGroup->checkedId()==0&&pairGroup->checkedId() == 0) {
 		gameState->SetMode(Mode::TIME_LIMIT);
-        hint = false;
 	}
+    if(modeGroup->checkedId()==0&&pairGroup->checkedId() == 1) {
+        gameState->SetMode(Mode::TIME_LIMIT_DOUBLE);
+    }
+    if(modeGroup->checkedId()==1&&pairGroup->checkedId() == 1) {
+        gameState->SetMode(Mode::FAST_REACTION_DOUBLE);
+    }
 
 	switch(buttonGroup->checkedId()) {
 	case 0:
@@ -229,11 +237,13 @@ void MainWindow::exitClicked()
 void MainWindow::pauseClicked()
 {
 	if(gameState->state() == GameState::PAUSE) {
-		pushButton->setText(tr("Pause"));
+		pauseButton->setText(tr("Pause"));
 		gameState->Resume();
+        hintButton->setEnabled(true);
 	}
 	else {
-		pushButton->setText(tr("Resume"));
+	    hintButton->setEnabled(false);
+		pauseButton->setText(tr("Resume"));
 		gameState->Pause();
 	}
 }
@@ -254,7 +264,8 @@ void MainWindow::onSwap(SwapDirection direction)
 		return;
 
 	gameState->Pause();
-	pushButton->setEnabled(false);
+	pauseButton->setEnabled(false);
+	hintButton->setEnabled(false);
 	auto *sender = (Jewel*)this->sender();
 	int x = sender->geometry().y()/50;
 	int y = sender->geometry().x()/50;
@@ -276,14 +287,33 @@ void MainWindow::onSwap(SwapDirection direction)
 		update();
 	}
 
-	if(hint)
-        showHint();
-
 	gameState->Resume();
-	pushButton->setEnabled(true);
+	pauseButton->setEnabled(true);
+    hintButton->setEnabled(true);
     uiDrawing = false;
 }
+void MainWindow::onSwap2(SwapDirection direction)
+{
 
+    auto *sender = (Jewel*)this->sender();
+    int x = sender->geometry().y()/50;
+    int y = sender->geometry().x()/50;
+    JewelPos pos(x,y);
+    //swap first
+    if(!swapJewelInMap2(x, y, direction))
+        return;
+
+    auto events = gameState->Swap2(pos, direction);
+    bool swaped = false;
+    for(const BoardEvent& event : events) {
+        swaped = true;
+        drawBoardEvent(event);//
+    }
+    if(!swaped) {
+        swapJewelInMap2(x, y, direction);
+        update();
+    }
+}
 void MainWindow::gameEnd(bool highScore)
 {
 	timeDisplay->setText(QString::number(0));
@@ -299,7 +329,8 @@ void MainWindow::gameEnd(bool highScore)
 		info.setText(tr("You didn't' do well this time."));
 		info.exec();
 	}
-	pushButton->setEnabled(false);
+	pauseButton->setEnabled(false);
+	hintButton->setEnabled(false);
 }
 /**
  * 事件的动画表示
@@ -321,16 +352,6 @@ void MainWindow::drawBoardEvent(const BoardEvent& event)
 			connect(animation,&QPropertyAnimation::finished,[=](){
 				delete dynamic_cast<QPropertyAnimation*>(sender());
 			});
-//            animationDrawing = true;
-//            QTimer timer;
-//            timer.setInterval(300);
-//            timer.setSingleShot(true);
-//            timer.start();
-//            connect(&timer,&QTimer::timeout,[=](){
-//                animationDrawing = false;
-//            });
-//            while(animationDrawing)
-//                QCoreApplication::processEvents(QEventLoop::AllEvents);
 		}
 		break;
 	}
@@ -343,7 +364,7 @@ void MainWindow::drawBoardEvent(const BoardEvent& event)
 		// wait
 		animationDrawing = true;
 		QTimer timer;
-		timer.setInterval(100);
+		timer.setInterval(300);
 		timer.setSingleShot(true);
 		timer.start();
 		connect(&timer,&QTimer::timeout,[=](){
@@ -418,15 +439,14 @@ void MainWindow::startGame()
 	delete currentFrame;
 
     currentFrame = new QFrame(this);
-    resize(800,500);
-    move(400,100);
+
 	setCentralWidget(currentFrame);
 	auto *under_frame = new QFrame(currentFrame);
 	auto *layout = new QGridLayout(currentFrame);
 	auto *under_layout = new QGridLayout(under_frame);
 
 	auto *board = new QLabel(currentFrame);
-	board->setPixmap(QPixmap("D:/Bejeweled0/res/bg.png"));
+	board->setPixmap(QPixmap("D:/Bejeweled00/res/bg.png"));
 	board->setMinimumHeight(kJewelWidgetSize*(boardSize));
 	board->setMinimumWidth(kJewelWidgetSize*(boardSize));
 	board->setMaximumHeight(kJewelWidgetSize*(boardSize));
@@ -456,18 +476,39 @@ void MainWindow::startGame()
 	auto *abort_button = new JewelButton(under_frame);
 	abort_button->setText(tr("Exit"));
 	connect(abort_button,SIGNAL(clicked()),this,SLOT(exitClicked()));
-
-    pushButton = new JewelButton(under_frame);
-	pushButton->setText(tr("Pause"));
-	connect(pushButton, SIGNAL(clicked()), this, SLOT(pauseClicked()));
-
+    if(gameState->getSettings()->mode==FAST_REACTION_DOUBLE||gameState->getSettings()->mode==TIME_LIMIT_DOUBLE)
+    {
+        resize(1600,500);
+        auto *board2 = new QLabel(currentFrame);
+        board2->setPixmap(QPixmap("D:/Bejeweled00/res/bg.png"));
+        board2->setMinimumHeight(kJewelWidgetSize*(boardSize));
+        board2->setMinimumWidth(kJewelWidgetSize*(boardSize));
+        board2->setMaximumHeight(kJewelWidgetSize*(boardSize));
+        board2->setMaximumWidth(kJewelWidgetSize*(boardSize));
+        for(int i=0; i != boardSize; ++i)
+            for(int j=0; j != boardSize; ++j) {
+                map2_[i][j].second = new Jewel(Color::NONE, board);
+                map2_[i][j].second->setGeometry(kJewelWidgetSize*j,kJewelWidgetSize*i,kJewelWidgetSize,kJewelWidgetSize);
+                connect(map2_[i][j].second, SIGNAL(Swap(Bejeweled::SwapDirection)), this, SLOT(
+                        onSwap2(Bejeweled::SwapDirection)));
+            }
+        layout->addWidget(board2,0,1);
+    }
+    else resize(800,500);
+    move(400,100);
+    pauseButton = new JewelButton(under_frame);
+    hintButton =new JewelButton(under_frame);
+    hintButton->setText(tr("Hint"));
+	pauseButton->setText(tr("Pause"));
+	connect(pauseButton, SIGNAL(clicked()), this, SLOT(pauseClicked()));
+    connect(hintButton, SIGNAL(clicked()), this, SLOT(hintClicked()));
 	under_layout->addWidget(label1, 0, 0);
 	under_layout->addWidget(scoreDisplay, 1, 0);
 	under_layout->addWidget(label3, 2, 0);
 	under_layout->addWidget(timeDisplay, 3, 0);
-	under_layout->addWidget(pushButton, 4, 0);
-	under_layout->addWidget(abort_button, 5, 0);
-
+	under_layout->addWidget(hintButton,4,0);
+	under_layout->addWidget(pauseButton, 5, 0);
+	under_layout->addWidget(abort_button, 6, 0);
 	layout->addWidget(board,0,0);
 	layout->addWidget(under_frame, 1, 0);
 
@@ -476,19 +517,17 @@ void MainWindow::startGame()
 	for(int i=0; i != boardSize; ++i)
 		for(int j=0; j != boardSize; ++j) {
 			map_[i][j].second = new Jewel(Color::NONE, board);
-			// [i][j] <-> [y][x]
 			map_[i][j].second->setGeometry(kJewelWidgetSize*j,kJewelWidgetSize*i,kJewelWidgetSize,kJewelWidgetSize);
 			connect(map_[i][j].second, SIGNAL(Swap(Bejeweled::SwapDirection)), this, SLOT(
                     onSwap(Bejeweled::SwapDirection)));
 		}
 	currentFrame->show();
-
-	connect(gameState, SIGNAL(Hint(Bejeweled::JewelPos)), this, SLOT(hintProcessor(Bejeweled::JewelPos)));
+	connect(gameState, SIGNAL(Hint(Bejeweled::JewelPos)), this, SLOT(updateHint(Bejeweled::JewelPos)));
     drawBoardEvent(gameState->StartNewGame());
-	if(hint)
-        showHint();
+//    drawBoardEvent(gameState->StartNewGame2());
 	connect(gameState, SIGNAL(timeTick(int)), this, SLOT(updateTimeDisplay(int)));
 	connect(gameState, SIGNAL(scoreUpdated(int)), this, SLOT(updateScore(int)));
+
 }
 
 void MainWindow::updateScore(int newScore)
@@ -558,4 +597,60 @@ bool MainWindow::swapJewelInMap(int x, int y, SwapDirection direction)
 	// No special case happened where swap outside the board
 	update();
 	return true;
+}
+bool MainWindow::swapJewelInMap2(int x, int y, SwapDirection direction)
+{
+    // TODO animate it
+    switch (direction) {
+        case DOWN: {
+            if(x == boardSize - 1)
+                return false;
+            const pair<Bejeweled::Color,Jewel*> temp = map2_[x][y];
+            map2_[x][y] = map2_[x+1][y];
+            map2_[x+1][y] = temp;
+            const QRect geometry_temp = map2_[x+1][y].second->geometry();
+            map2_[x+1][y].second->setGeometry(map2_[x][y].second->geometry());
+            map2_[x][y].second->setGeometry(geometry_temp);
+            break;
+        }
+        case UP: {
+            if(x == 0)
+                return false;
+            const pair<Bejeweled::Color,Jewel*> temp = map2_[x][y];
+            map2_[x][y] = map2_[x-1][y];
+            map2_[x-1][y] = temp;
+            const QRect geometry_temp = map2_[x-1][y].second->geometry();
+            map2_[x-1][y].second->setGeometry(map2_[x][y].second->geometry());
+            map2_[x][y].second->setGeometry(geometry_temp);
+            break;
+        }
+        case LEFT: {
+            if(y == 0)
+                return false;
+            const pair<Bejeweled::Color,Jewel*> temp = map2_[x][y];
+            map2_[x][y] = map2_[x][y-1];
+            map2_[x][y-1] = temp;
+            const QRect geometry_temp = map2_[x][y-1].second->geometry();
+            map2_[x][y-1].second->setGeometry(map2_[x][y].second->geometry());
+            map2_[x][y].second->setGeometry(geometry_temp);
+            break;
+        }
+        case RIGHT: {
+            if(y == boardSize - 1)
+                return false;
+            const pair<Bejeweled::Color,Jewel*> temp = map2_[x][y];
+            map2_[x][y] = map2_[x][y+1];
+            map2_[x][y+1] = temp;
+            const QRect geometry_temp = map2_[x][y+1].second->geometry();
+            map2_[x][y+1].second->setGeometry(map2_[x][y].second->geometry());
+            map2_[x][y].second->setGeometry(geometry_temp);
+            break;
+        }
+        default:
+            return false;
+            break;
+    }
+    // No special case happened where swap outside the board
+    update();
+    return true;
 }

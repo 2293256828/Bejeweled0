@@ -43,7 +43,7 @@ void GameState::SetMode(Mode mode)
 GameState::~GameState()
 {
 
-		delete game;
+	delete game;
 	delete settings;
 }
 
@@ -59,17 +59,27 @@ BoardEvent GameState::StartNewGame()
 	connect(game, SIGNAL(scoreUpdated(int)), this, SIGNAL(scoreUpdated(int)));
 	connect(game, SIGNAL(gameEnd(int)), this, SLOT(GameEndProcessor_(int)));
 	connect(game, SIGNAL(Hint(Bejeweled::JewelPos)), this, SIGNAL(Hint(Bejeweled::JewelPos)));
-
+    connect(game, SIGNAL(Hint(Bejeweled::JewelPos)), this, SIGNAL(Hint(Bejeweled::JewelPos)));
 	state_ = INGAME;
 	return game->NewGame();
 }
-
+//BoardEvent GameState::StartNewGame2()
+//{
+//    game2 = new Game(*settings);
+//    connect(game2, SIGNAL(scoreUpdated2(int)), this, SIGNAL(scoreUpdated2(int)));
+////    connect(game2, SIGNAL(Hint(JewelPos)), this, SIGNAL(Hint(Bejeweled::JewelPos)));
+////    connect(game2, SIGNAL(gameEnd(int)), this, SLOT(GameEndProcessor_(int)));
+//
+//    return game2->NewGame();
+//}
 void GameState::Pause()
 {
 	game->Pause();
 	state_ = PAUSE;
 }
-
+void GameState::Punish(int a) {
+    game->Punish( a);
+}
 void GameState::Resume()
 {
 	game->Resume();
@@ -91,6 +101,13 @@ void GameState::Exit()
 list<BoardEvent> GameState::Swap(JewelPos pos, SwapDirection direction)
 {
 	return game->Swap(pos, direction);
+}
+list<BoardEvent> GameState::Swap2(JewelPos pos, SwapDirection direction)
+{
+    return game2->Swap(pos, direction);
+}
+GameSettings *GameState::getSettings() const {
+    return settings;
 }
 
 

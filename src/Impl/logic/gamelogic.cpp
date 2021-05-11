@@ -1,8 +1,9 @@
 #include "src/headers/logic/gamelogic.h"
-#include <cassert>
 
 using namespace Bejeweled;
-
+/**
+ * gamelogic.cpp 设置不同的模式逻辑
+ */
 TimeOutMode::TimeOutMode() :
 	ModeLogic(nullptr)
 {
@@ -16,16 +17,11 @@ ModeLogic::ModeLogic(QObject *parent) :
 	timer_= new CountdownTimer(0,this);
 	connect(timer_, SIGNAL(TimeOut()), this, SIGNAL(timeOut()));
 	connect(timer_,&CountdownTimer::Tick,[=](){
-		emit(timeTick(timer_->GetTimeRemained()));
-	});
+		emit(timeTick(timer_->GetTimeRemained()));});
 }
 
-int TimeOutMode::NextGeneration()
-{
-	if(timer_->GetTimeRemained() >= 60)
-		return 3;
-	else
-		return 4;
+void ModeLogic::Punish(int a){
+    timer_->Punish(a);
 }
 
 void ModeLogic::Pause()
@@ -38,7 +34,13 @@ void ModeLogic::Resume()
 	timer_->Resume();
 }
 
-
+int TimeOutMode::getGeneration()
+{
+    if(timer_->GetTimeRemained() >= 60)
+        return 3;
+    else
+        return 4;
+}
 FastReactionMode::FastReactionMode() :
 	ModeLogic(nullptr)
 {
@@ -48,21 +50,11 @@ FastReactionMode::FastReactionMode() :
     count = 0;
 }
 
-int FastReactionMode::NextGeneration()
+int FastReactionMode::getGeneration()
 {
 	return diff;
 }
 
-void FastReactionMode::IncreaseDifficulty()
-{
-	if(diff > 1)
-        diff -= 1;
-}
-
-void FastReactionMode::ReduceDifficulty()
-{
-    diff += 1;
-}
 
 void FastReactionMode::FinishedOneMove()
 {
@@ -70,7 +62,7 @@ void FastReactionMode::FinishedOneMove()
 	if(count > 10)
 		ntime = 3;
 	if(count > 25)
-		ntime - 2;
+		ntime = 2;
 	timer_->SetTimeRemained(4);
 	emit(timeTick(ntime)); // refresh
 	++count;

@@ -10,7 +10,7 @@ using namespace std;
 namespace Bejeweled {
 
 enum  Difficulty { EASY, MEDIUM, HARD };
-enum  Mode { TIME_LIMIT, FAST_REACTION };
+enum  Mode { TIME_LIMIT, FAST_REACTION,TIME_LIMIT_DOUBLE,FAST_REACTION_DOUBLE };
 struct GameSettings {
 	Mode mode;
 	Difficulty difficulty;
@@ -39,6 +39,9 @@ private:
 class GameState : public QObject
 {
 	Q_OBJECT
+
+
+
 public:
 	enum State { PAUSE, INGAME, ENDED };
 
@@ -46,17 +49,21 @@ public:
 	~GameState() override;
 	void SetDifficulty(Difficulty);
 	void SetMode(Mode);
-	BoardEvent StartNewGame();
+
+    GameSettings *getSettings() const;
+
+    BoardEvent StartNewGame();
+    BoardEvent StartNewGame2();
 	void Pause();
 	void Resume();
+    void Punish(int);
 	void Exit();
 	int GetScore(Mode mode,int rank) {return highScores.GetScore(mode, rank);}
 	list<BoardEvent> Swap(JewelPos, Bejeweled::SwapDirection direction);
-
+    list<BoardEvent> Swap2(JewelPos pos, SwapDirection direction);
 	// copy inhibited
 	GameState(const GameState&) = delete;
 	GameState& operator=(const GameState&) = delete;
-
 	State state() const;
 
 signals:
@@ -64,8 +71,7 @@ signals:
 	void scoreUpdated(int new_score);
 	void gameEnd(bool high_score);
 	void Hint(Bejeweled::JewelPos pos);
-
-public slots:
+    void scoreUpdated2(int new_score);
 
 private slots:
 	void GameEndProcessor_(int);
@@ -75,6 +81,9 @@ private:
 	GameSettings *settings;
 	State state_;
 	Game *game;
+	Game*game2;
+
+
 };
 
 }

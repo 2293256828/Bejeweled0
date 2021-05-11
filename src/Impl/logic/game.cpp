@@ -2,7 +2,9 @@
 #include "src/headers/logic/game.h"
 #include "src/headers/logic/gamelogic.h"
 #include "src/headers/components/scoresystem.h"
-
+/**
+ * game.cpp 继承QObject的窗口,负责耦合记分系统,模式设置和难度设置、棋盘的初始化
+ */
 using namespace Bejeweled;
 using namespace std;
 Game::Game(const GameSettings &settings,QObject *parent) :
@@ -23,28 +25,31 @@ Game::Game(const GameSettings &settings,QObject *parent) :
 		break;
 	}
     board = new Board(boardSize);
-
 	// Create appropriate GameLogic
 	switch (settings.mode) {
 	case TIME_LIMIT:
         modeLogic = new TimeOutMode();
-            hint = false;
+
 		break;
 	case FAST_REACTION:
         modeLogic = new FastReactionMode();
-            hint = true;
 		break;
+	case FAST_REACTION_DOUBLE:
+	        modeLogic=new FastReactionMode();
+            break;
+    case TIME_LIMIT_DOUBLE:
+	        modeLogic=new TimeOutMode();
+            break;
 	}
-
     scoreSystem = new ScoreSystem;
-    board->setGenerationFactor(modeLogic->NextGeneration());
+    board->setGenerationFactor(modeLogic->getGeneration());
 }
 
 
 list<BoardEvent> Game::Swap(JewelPos pos, Bejeweled::SwapDirection direction)
 {
 	// update generation factor
-    board->setGenerationFactor(modeLogic->NextGeneration());
+    board->setGenerationFactor(modeLogic->getGeneration());
 	list<BoardEvent> events = board->Swap(pos, direction);
 	bool first = true; //Processing First BoardEvent
 	for(const BoardEvent& event : events) {
@@ -63,12 +68,36 @@ list<BoardEvent> Game::Swap(JewelPos pos, Bejeweled::SwapDirection direction)
 		modeLogic->FinishedOneMove();
         scoreSystem->finishMove();
 	}
-	if(hint)
-		emit(Hint(board->getPossibleSwap()));
+    emit(Hint(board->getPossibleSwap()));
 
 	return events;
 }
+list<BoardEvent> Game::Swap2(JewelPos pos, Bejeweled::SwapDirection direction)
+{
+    // update generation factor
+    board->setGenerationFactor(modeLogic->getGeneration());
+    list<BoardEvent> events = board->Swap(pos, direction);
+    bool first = true; //Processing First BoardEvent
+    for(const BoardEvent& event : events) {
+        if(first && event.type == BoardEvent::DIE) {
+            scoreSystem2->firstGain(event.getDiePos().size());
+            emit(scoreUpdated(scoreSystem2->getScore()));
+            first = false;
+        }
+        else if(!first && event.type == BoardEvent::DIE) {
+            scoreSystem2->comboGain(event.getDiePos().size());
+            emit(scoreUpdated(scoreSystem2->getScore()));
+        }
+    }
 
+    if(!events.empty()) { //not a fail swap
+        modeLogic->FinishedOneMove();
+        scoreSystem->finishMove();
+    }
+            emit(Hint(board->getPossibleSwap()));
+
+    return events;
+}
 /**
  * 开启一局游戏,调用board的Init()方法
  * @see board.h Init()
@@ -78,12 +107,13 @@ BoardEvent Game::NewGame()
 {
 	connect(modeLogic, SIGNAL(timeOut()), this, SLOT(endGame()));
 	connect(modeLogic, SIGNAL(timeTick(int)), this, SIGNAL(timeTick(int)));
+
 	BoardEvent ret = board->Init();
-	if(hint)
-		emit(Hint(board->getPossibleSwap()));
 	return ret;
 }
-
+void Game::Punish(int a) {
+    modeLogic->Punish(a);
+}
 void Game::Pause()
 {
 	modeLogic->Pause();

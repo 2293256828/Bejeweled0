@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.19)
-project(Bejeweled0)
+project(Bejeweled00)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_AUTOMOC ON)
@@ -11,11 +11,11 @@ find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Multimedia REQUIRED)
 include_directories(src)
 
-add_executable(Bejeweled0
+add_executable(Bejeweled00
         src/Impl/logic/board.cpp
         src/headers/logic/board.h
-        src/Impl/components/countdowntimer.cpp
-        src/headers/components/countdowntimer.h
+        src/Impl/components/timer.cpp
+        src/headers/components/timer.h
         src/Impl/logic/game.cpp
         src/headers/logic/game.h
         src/Impl/logic/gamelogic.cpp
@@ -31,6 +31,6 @@ add_executable(Bejeweled0
         src/headers/ui/mainwindow.h
         src/Impl/components/scoresystem.cpp
         src/headers/components/scoresystem.h src/headers/constant.h)
-target_link_libraries(Bejeweled0 Qt5::Core)
-target_link_libraries(Bejeweled0 Qt5::Widgets)
-target_link_libraries(Bejeweled0 Qt5::Multimedia)
+target_link_libraries(Bejeweled00 Qt5::Core)
+target_link_libraries(Bejeweled00 Qt5::Widgets)
+target_link_libraries(Bejeweled00 Qt5::Multimedia)

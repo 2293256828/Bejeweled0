@@ -18,12 +18,13 @@ class Game : public QObject
 	Q_OBJECT
 public:
 	explicit Game(const GameSettings &settings,QObject *parent = nullptr); // doesn't start a new game
-	std::list<BoardEvent> Swap(JewelPos, Bejeweled::SwapDirection direction);
+	list<BoardEvent> Swap(JewelPos, Bejeweled::SwapDirection direction);
+    list<BoardEvent> Swap2(JewelPos pos, Bejeweled::SwapDirection direction);//todo P2
 	BoardEvent NewGame();
 	void Pause();
 	void Resume();
-	
-	// copy inhibited
+    void Punish(int);
+    // copy inhibited
 	Game(const Game&) = delete;
 	Game& operator=(const Game&) = delete;
 
@@ -32,15 +33,15 @@ signals:
 	void timeTick(int);
 	void gameEnd(int score);
 	void Hint(Bejeweled::JewelPos);
-	
+
 public slots:
 	void endGame();
 
 private:
 	Board *board;
 	ScoreSystem *scoreSystem;
+    ScoreSystem *scoreSystem2;//todo P2
 	ModeLogic *modeLogic;
-	bool hint;
 };
 
 }
