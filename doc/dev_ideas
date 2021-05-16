@@ -38,5 +38,5 @@ src:
   modelogic.h
     ModeLogic类（纯虚类）
       提供控制宝石生成以及游戏流程的接口
-    TimeOutMode FastReactionMode 类实现ModeLogic类
+    TimeOutMode_P1 FastReactionMode_P1 类实现ModeLogic类
       分别实现两种游戏模式

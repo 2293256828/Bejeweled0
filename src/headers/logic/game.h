@@ -19,8 +19,7 @@ class Game : public QObject
 public:
 	explicit Game(const GameSettings &settings,QObject *parent = nullptr); // doesn't start a new game
 	list<BoardEvent> Swap(JewelPos, Bejeweled::SwapDirection direction);
-    list<BoardEvent> Swap2(JewelPos pos, Bejeweled::SwapDirection direction);//todo P2
-	BoardEvent NewGame();
+	BoardEvent NewGame(int);
 	void Pause();
 	void Resume();
     void Punish(int);

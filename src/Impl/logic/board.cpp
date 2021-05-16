@@ -1,21 +1,26 @@
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
 #include "src/headers/logic/board.h"
 using namespace Bejeweled;
 using namespace std;
-
+/**
+ * board.cpp 对棋盘
+ * @param size
+ */
 Board::Board(Size size) :
         board(size, vector<int>(size, 0)),
         generationFactor(1),
         size(size),
-        lastPossibleSwap(0, 0)
+        lastPossibleSwap(0, 0),
+        count(0)
 {
-	srand(time(nullptr));
+
 }
-/**
+/**鼠标滑动滑动宝石触发->mainWindow.onSwap(JewelPos pos, SwapDirection direction)->gameState.Swap()->game.Swap()->board.Swap()
  *进行一次尝试交换产生的事件
- * @param pos
- * @param direction
+ * @param pos 被点击的宝石的位置
+ * @param direction 方向
  * @return
  */
 list<BoardEvent> Board::Swap(JewelPos pos, SwapDirection direction)
@@ -24,6 +29,7 @@ list<BoardEvent> Board::Swap(JewelPos pos, SwapDirection direction)
 	IntTab tab = board;
 	int i = pos.x, j = pos.y;
 
+	//根据交换方向尝试交换
 	switch(direction) {
 	case UP:
 		if(i == 0)
@@ -52,11 +58,11 @@ list<BoardEvent> Board::Swap(JewelPos pos, SwapDirection direction)
 	default:
 		break;
 	}
-	// get list of to-be-eliminated jewelpos
+	// get list of to-be-eliminated jewel pos
 	list<JewelPos> dieList = Eliminatable(tab);
 	// if not a valid swap, return blank list
 	if(dieList.empty())
-		return events;
+		return events;//交换无效
 
 	// a valid swap
 	board = tab;
@@ -98,19 +104,27 @@ JewelPos Board::getPossibleSwap()
 {
 	return lastPossibleSwap;
 }
+void Board::seedToArray(){
+    for(int i=0;i<1000000;i++){
+       arr[i]=rand()%5+1;
+    }
 
+}
 /**
  *初始化棋盘
  * @return
  */
-BoardEvent Board::Init()
-{
+BoardEvent Board::Init(int seed)
+{   srand(seed);
+    seedToArray();
 	BoardEvent event(BoardEvent::NEW);
     event.setNewPos(fullFill(board));
 	return event;
 }
+
 /**
- * 填充棋盘
+ * 填充棋盘:0->random 1~5
+ * 保证有可以消除的位置,且可以自己调整最少可消除的数量
  * @param tab
  * @return List<JewelInfo> infolist 存放宝石信息的list
  */
@@ -123,11 +137,14 @@ list<JewelInfo> Board::fullFill(IntTab &tab)
 		for(int i=0; i != size; ++i)
 			for(int j=0; j != size; ++j)
 				if(board[i][j] == 0) {
-					// random between 1 and 5
-					tmptab[i][j] = rand() % 5+1;
+//				    tmptab[i][j]=rand()%5+1;
+//                  int rand=abs(13*count*count-7*count+3*(count*count-78))%1000;
+					tmptab[i][j] = arr[count++];
+//					count++;
+					if(count==1000000)count=0;//循环使用
 					infolist.emplace_back(JewelPos(i,j),tmptab[i][j]);
 				}
-	} while(!Eliminatable(tmptab).empty() || PossibleSwap(tmptab) < generationFactor);
+	} while(!Eliminatable(tmptab).empty()|| PossibleSwap(tmptab) < generationFactor);
 	// update
 	tab = tmptab;
 	return infolist;
@@ -135,19 +152,19 @@ list<JewelInfo> Board::fullFill(IntTab &tab)
 /**
  *
  * @param tab 棋盘
- * @return count 有多少可行交换
+ * @return int count 有多少可行交换
  */
 int Board::PossibleSwap(const IntTab& tab)
 {
-	IntTab tab2 = tab;
+	IntTab tab2 = tab;//tab2:用于假想交换
 	int count = 0;
 	// swap right
 	for(int i=0; i != size; ++i)
 		for(int j=0; j != size - 1; ++j) {
-			// swap
+			//左右交换
 			tab2[i][j] = tab2[i][j+1];
 			tab2[i][j+1] = tab[i][j];
-			if(!Eliminatable(tab2).empty()) {
+			if(!Eliminatable(tab2).empty()) {//如果存在可消除的位置
 				// record it for hint use
 				lastPossibleSwap.x = i;
                 lastPossibleSwap.y = j;
@@ -157,7 +174,7 @@ int Board::PossibleSwap(const IntTab& tab)
 			tab2[i][j] = tab[i][j];
 			tab2[i][j+1] = tab[i][j+1];
 		}
-	// swap down
+	//上下交换
 	for(int j=0; j != size; ++j)
 		for(int i=0; i != size - 1; ++i) {
 			// swap

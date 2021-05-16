@@ -5,6 +5,7 @@ ScoreSystem::ScoreSystem() :
         combo(0),
         totalScore(0)
 {
+
 }
 
 
@@ -16,6 +17,7 @@ void ScoreSystem::firstGain(int gain)
 
 void ScoreSystem::comboGain(int gain)
 {
+
     totalScore += gain + (gain - 3) + combo * 2;
 	++combo;
 }

@@ -4,7 +4,9 @@
 #include "src/headers/components/scoresystem.h"
 #include "src/headers/logic/game.h"
 
-
+/**
+ * 继承QWidget作为QT组件,从而可以接收信号
+ */
 using namespace Bejeweled;
 using namespace std;
 
@@ -42,7 +44,6 @@ void GameState::SetMode(Mode mode)
 
 GameState::~GameState()
 {
-
 	delete game;
 	delete settings;
 }
@@ -50,19 +51,27 @@ GameState::~GameState()
 /**
  * 开启一局游戏 连接信号与槽 调用game的NewGame()
  * @see game.cpp NewGame()
- * @return
+ * @return 获得的NEW事件返回给mainWindow的startGame()中去绘制
  */
-BoardEvent GameState::StartNewGame()
+BoardEvent GameState::StartNewGame(int seed)
 {
     game = new Game(*settings);
 	connect(game, SIGNAL(timeTick(int)), this, SIGNAL(timeTick(int)));
+	//game->gameState->mainWindow, purpose:更新时间Label
+
+
 	connect(game, SIGNAL(scoreUpdated(int)), this, SIGNAL(scoreUpdated(int)));
+	//game->gameState->mainWindow, purpose :更新成绩Label
+
 	connect(game, SIGNAL(gameEnd(int)), this, SLOT(GameEndProcessor_(int)));
+	//game->gameState->mainWindow ,purpose:游戏结束处理, (int)是结束时的成绩
+
 	connect(game, SIGNAL(Hint(Bejeweled::JewelPos)), this, SIGNAL(Hint(Bejeweled::JewelPos)));
-    connect(game, SIGNAL(Hint(Bejeweled::JewelPos)), this, SIGNAL(Hint(Bejeweled::JewelPos)));
+	//game->gameState->mainWindow , purpose: 每次交换后更新提示的位置 (JewelPos)交给mainWindow记录下来
 	state_ = INGAME;
-	return game->NewGame();
+	return game->NewGame(seed);
 }
+//todo 双人
 //BoardEvent GameState::StartNewGame2()
 //{
 //    game2 = new Game(*settings);
@@ -72,20 +81,35 @@ BoardEvent GameState::StartNewGame()
 //
 //    return game2->NewGame();
 //}
+
+ /**
+  * mainWindow.pauseClicked->gameState.Pause->game.Pause->modeLogic.Pause->timer.Pause
+  */
 void GameState::Pause()
 {
 	game->Pause();
 	state_ = PAUSE;
 }
+/**
+ * mainWindow.hintClicked->gameState.Punish->game.Punish->modeLogic.Punish->timer.Punish
+ * @param a second
+ */
 void GameState::Punish(int a) {
-    game->Punish( a);
+    game->Punish(a);
 }
+
+/**
+ * mainWindow.pauseClicked->gameState.Resume->game.Resume->modeLogic.Resume->timer.Resume
+ */
 void GameState::Resume()
 {
 	game->Resume();
 	state_ = INGAME;
 }
 
+/**
+ * mainWindow.exitClicked->exit()
+ */
 void GameState::Exit()
 {
 	delete game;
@@ -102,15 +126,9 @@ list<BoardEvent> GameState::Swap(JewelPos pos, SwapDirection direction)
 {
 	return game->Swap(pos, direction);
 }
-list<BoardEvent> GameState::Swap2(JewelPos pos, SwapDirection direction)
-{
-    return game2->Swap(pos, direction);
-}
 GameSettings *GameState::getSettings() const {
     return settings;
 }
-
-
 HighScoresStorage::HighScoresStorage() :
 	tl_scores_(kMaxRecord,0),
 	fr_scores_(kMaxRecord,0)

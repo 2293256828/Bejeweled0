@@ -7,6 +7,11 @@
  */
 using namespace Bejeweled;
 using namespace std;
+/**
+ * 根据游戏设置的difficulty设置boardSize,模式设置modeLogic
+ * @param settings
+ * @param parent
+ */
 Game::Game(const GameSettings &settings,QObject *parent) :
 	QObject(parent)
 {
@@ -28,30 +33,34 @@ Game::Game(const GameSettings &settings,QObject *parent) :
 	// Create appropriate GameLogic
 	switch (settings.mode) {
 	case TIME_LIMIT:
-        modeLogic = new TimeOutMode();
+        modeLogic = new TimeOutMode_P1();
 
 		break;
 	case FAST_REACTION:
-        modeLogic = new FastReactionMode();
+        modeLogic = new FastReactionMode_P1();
 		break;
 	case FAST_REACTION_DOUBLE:
-	        modeLogic=new FastReactionMode();
+	        modeLogic=new FastReactionMode_P2();
             break;
     case TIME_LIMIT_DOUBLE:
-	        modeLogic=new TimeOutMode();
+	        modeLogic=new TimeOutMode_P2();
             break;
 	}
     scoreSystem = new ScoreSystem;
     board->setGenerationFactor(modeLogic->getGeneration());
 }
 
-
+/**
+ *  鼠标滑动滑动宝石触发->mainWindow.onSwap()->gameState.Swap()->game.Swap()->board.Swap()
+ * 调用board的Swap方法,获取交换后的events返回给gameState 并计算交换的得分
+ * 交换后emit信号给出交换后的分数,和下一个提示位置
+ */
 list<BoardEvent> Game::Swap(JewelPos pos, Bejeweled::SwapDirection direction)
 {
 	// update generation factor
     board->setGenerationFactor(modeLogic->getGeneration());
 	list<BoardEvent> events = board->Swap(pos, direction);
-	bool first = true; //Processing First BoardEvent
+	bool first = true; //Processing First BoardEvent //combo加成
 	for(const BoardEvent& event : events) {
 		if(first && event.type == BoardEvent::DIE) {
             scoreSystem->firstGain(event.getDiePos().size());
@@ -68,62 +77,79 @@ list<BoardEvent> Game::Swap(JewelPos pos, Bejeweled::SwapDirection direction)
 		modeLogic->FinishedOneMove();
         scoreSystem->finishMove();
 	}
-    emit(Hint(board->getPossibleSwap()));
+    emit(Hint(board->getPossibleSwap()));//
 
 	return events;
 }
-list<BoardEvent> Game::Swap2(JewelPos pos, Bejeweled::SwapDirection direction)
-{
-    // update generation factor
-    board->setGenerationFactor(modeLogic->getGeneration());
-    list<BoardEvent> events = board->Swap(pos, direction);
-    bool first = true; //Processing First BoardEvent
-    for(const BoardEvent& event : events) {
-        if(first && event.type == BoardEvent::DIE) {
-            scoreSystem2->firstGain(event.getDiePos().size());
-            emit(scoreUpdated(scoreSystem2->getScore()));
-            first = false;
-        }
-        else if(!first && event.type == BoardEvent::DIE) {
-            scoreSystem2->comboGain(event.getDiePos().size());
-            emit(scoreUpdated(scoreSystem2->getScore()));
-        }
-    }
-
-    if(!events.empty()) { //not a fail swap
-        modeLogic->FinishedOneMove();
-        scoreSystem->finishMove();
-    }
-            emit(Hint(board->getPossibleSwap()));
-
-    return events;
-}
+//list<BoardEvent> Game::Swap2(JewelPos pos, Bejeweled::SwapDirection direction)
+//{
+//    // update generation factor
+//    board->setGenerationFactor(modeLogic->getGeneration());
+//    list<BoardEvent> events = board->Swap(pos, direction);
+//    bool first = true; //Processing First BoardEvent
+//    for(const BoardEvent& event : events) {
+//        if(first && event.type == BoardEvent::DIE) {
+//            scoreSystem2->firstGain(event.getDiePos().size());
+//            emit(scoreUpdated(scoreSystem2->getScore()));
+//            first = false;
+//        }
+//        else if(!first && event.type == BoardEvent::DIE) {
+//            scoreSystem2->comboGain(event.getDiePos().size());
+//            emit(scoreUpdated(scoreSystem2->getScore()));
+//        }
+//    }
+//
+//    if(!events.empty()) { //not a fail swap
+//        modeLogic->FinishedOneMove();
+//        scoreSystem->finishMove();
+//    }
+//            emit(Hint(board->getPossibleSwap()));
+//
+//    return events;
+//}
 /**
- * 开启一局游戏,调用board的Init()方法
+ * 开启一局游戏,调用board的Init()方法,获得NEW事件,返回给gameState
  * @see board.h Init()
  * @return
  */
-BoardEvent Game::NewGame()
+BoardEvent Game::NewGame(int seed)
 {
 	connect(modeLogic, SIGNAL(timeOut()), this, SLOT(endGame()));
+	//modeLogic->game.endGame()
 	connect(modeLogic, SIGNAL(timeTick(int)), this, SIGNAL(timeTick(int)));
+    //modeLogic->game->gameState->mainWindow.updateTimeDisplay()
 
-	BoardEvent ret = board->Init();
+	BoardEvent ret = board->Init(seed);
+
 	return ret;
 }
+/**
+ * mainWindow.hintClicked->gameState.Punish->game.Punish->modeLogic.Punish->timer.Punish
+ * @param a second
+ */
 void Game::Punish(int a) {
     modeLogic->Punish(a);
 }
+
+/**
+ * mainWindow.pauseClicked->gameState.Pause->game.Pause->modeLogic.Pause->timer.Pause
+ */
 void Game::Pause()
 {
 	modeLogic->Pause();
 }
 
+/**
+ * mainWindow.pauseClicked->gameState.Resume->game.Resume->modeLogic.Resume->timer.Resume
+ */
 void Game::Resume()
 {
 	modeLogic->Resume();
 }
 
+/**
+ * when timer.sec<=0 emit(timeOut())->modeLogic->
+ */
 void Game::endGame()
 {
 	emit(gameEnd(scoreSystem->getScore()));

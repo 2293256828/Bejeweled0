@@ -52,27 +52,40 @@ public:
 
     GameSettings *getSettings() const;
 
-    BoardEvent StartNewGame();
-    BoardEvent StartNewGame2();
+    BoardEvent StartNewGame(int);
+
 	void Pause();
 	void Resume();
     void Punish(int);
 	void Exit();
+
+
 	int GetScore(Mode mode,int rank) {return highScores.GetScore(mode, rank);}
 	list<BoardEvent> Swap(JewelPos, Bejeweled::SwapDirection direction);
-    list<BoardEvent> Swap2(JewelPos pos, SwapDirection direction);
+
 	// copy inhibited
 	GameState(const GameState&) = delete;
 	GameState& operator=(const GameState&) = delete;
 	State state() const;
 
 signals:
-	void timeTick(int remain);
-	void scoreUpdated(int new_score);
-	void gameEnd(bool high_score);
-	void Hint(Bejeweled::JewelPos pos);
-    void scoreUpdated2(int new_score);
+	void timeTick(int remain);//send to mainWindow, purpose :更新计时器显示Label
 
+
+	void scoreUpdated(int new_score);//send to mainWindow, purpose :更新成绩显示Label
+
+
+	void gameEnd(bool high_score);//send to mainWindow ,purpose :游戏结束处理
+
+
+	void Hint(Bejeweled::JewelPos pos);//     send to mainWindow ,purpose :更新提示位置
+
+
+
+    /**
+     * 槽函数
+     * 游戏结束时
+     */
 private slots:
 	void GameEndProcessor_(int);
 
@@ -80,9 +93,13 @@ private:
 	HighScoresStorage highScores;
 	GameSettings *settings;
 	State state_;
-	Game *game;
-	Game*game2;
+	Game * game;
 
+
+	//todo 双人
+	Game*game2;
+    //todo 双人
+    void scoreUpdated2(int new_score);
 
 };
 

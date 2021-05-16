@@ -9,6 +9,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Multimedia REQUIRED)
+find_package(Qt5Network REQUIRED)
 include_directories(src)
 
 add_executable(Bejeweled00
@@ -30,7 +31,9 @@ add_executable(Bejeweled00
         src/Impl/ui/mainwindow.cpp
         src/headers/ui/mainwindow.h
         src/Impl/components/scoresystem.cpp
-        src/headers/components/scoresystem.h src/headers/constant.h)
+        src/headers/components/scoresystem.h
+        src/headers/constant.h)
 target_link_libraries(Bejeweled00 Qt5::Core)
 target_link_libraries(Bejeweled00 Qt5::Widgets)
 target_link_libraries(Bejeweled00 Qt5::Multimedia)
+target_link_libraries(Bejeweled00 Qt5::Network)

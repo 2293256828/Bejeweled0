@@ -70,7 +70,7 @@ public:
 	void setGenerationFactor(int f) { generationFactor = f;}
 	JewelPos getPossibleSwap();
 	int getColorAt(int x, int y) {return board[x][y];}
-	BoardEvent Init();
+	BoardEvent Init(int);
 	// copy inhibited
 	Board(const Board&) = delete;
 	Board& operator=(const Board&) = delete;
@@ -78,14 +78,17 @@ public:
 private:
 	list<JewelInfo> fullFill(IntTab &tab);
 	int PossibleSwap(const IntTab&);
+    void seedToArray();
 	list<JewelPos> Eliminatable(const IntTab&) const;
 
 	list<pair<JewelPos,JewelPos>> Fall(IntTab&);
-
+    int arr[1000000];
 	JewelPos lastPossibleSwap;
 	IntTab board;
 	int generationFactor;
 	const Size size;
+    int count;
+
 };
 
 }
