@@ -28,7 +28,10 @@ MainWindow::MainWindow(QWidget *parent) :
         animationDrawing2(false),
         animationDrawing(false),
         hintPos(0, 0),
-        port(8080) {
+        ready(false),
+        boardSize(1),
+        startSignal("55555"),
+        port(8000) {
     ui->setupUi(this);
     setWindowIcon(QIcon(QPixmap("D:/Bejeweled00/res/green.png")));
     gameState = new GameState();
@@ -57,10 +60,11 @@ void MainWindow::startHome() {
     palette.setBrush(backgroundRole(), QBrush(pixmap));
     setPalette(palette);
     setCentralWidget(currentFrame);
-    JewelButton *start_button, *score_button,*join_button;
+    JewelButton *start_button, *score_button,*join_button,*returnButton;
     start_button = new JewelButton(currentFrame);
     score_button = new JewelButton(currentFrame);
     join_button=new JewelButton(currentFrame);
+    returnButton=new JewelButton(currentFrame);
     start_button->setText(tr("START GAME"));
     score_button->setText(tr("SCORE BOARD"));
     join_button->setText(tr("JOIN ROOM"));
@@ -71,8 +75,11 @@ void MainWindow::startHome() {
     QObject::connect(start_button, SIGNAL(clicked()), this, SLOT(startClicked()));
     QObject::connect(score_button, SIGNAL(clicked()), this, SLOT(scoreClicked()));
     QObject::connect(join_button, SIGNAL(clicked()), this, SLOT(joinClicked()));
+    QObject::connect(returnButton, SIGNAL(clicked()), this, SLOT(returnClicked()));
 }
-
+void MainWindow::returnClicked(){
+    startHome();
+}
 void MainWindow::updateHint(JewelPos pos) {
     hintPos = pos;
 }
@@ -81,6 +88,20 @@ void MainWindow::joinClicked(){
     QString text = QInputDialog::getText(this, tr("INPUT"),tr("INPUT ROOM NUMBER"), QLineEdit::Normal,nullptr, &ok);
     if(ok&&text.length()>0&&text.length()<6)joinRoom(text.toInt());
 
+}
+void MainWindow::registerClicked(){
+    //todo by pts UI
+    delete currentFrame;
+    currentFrame = new QFrame(this);
+    JewelButton *returnButton;
+    returnButton=new JewelButton(currentFrame);
+    returnButton->setText("RETURN");
+    returnButton->move(500,600);
+    QObject::connect(returnButton, SIGNAL(clicked()), this, SLOT(returnClicked()));
+}
+void MainWindow::loginClicked(){
+    delete currentFrame;
+    //todo by pts UI
 }
 void MainWindow::hintClicked() {
     if (gameState->state() != GameState::INGAME) { return; }
@@ -109,12 +130,10 @@ void MainWindow::hintClicked() {
     hintButton->setEnabled(true);
     uiDrawing = false;
 }
-
 void MainWindow::startClicked() {
     currentFrame->hide();
     startSelect();
 }
-
 void MainWindow::scoreClicked() {
     // font setup
     QFont larger_font, smaller_font;
@@ -149,7 +168,6 @@ void MainWindow::scoreClicked() {
     layout->addWidget(ret_button, HighScoresStorage::kMaxRecord + 1, 1);
     connect(ret_button, SIGNAL(clicked()), this, SLOT(startHome()));
 }
-
 /**
  * 进入选择游戏模式页面
  */
@@ -211,21 +229,25 @@ void MainWindow::goClicked() {
             boardSize = Board::kLargeSize;
             gameState->SetDifficulty(Difficulty::EASY);
             gameState2->SetDifficulty(Difficulty::EASY);
+            startSignal[0]='1';
             break;
         case 1:
             boardSize = Board::kMediumSize;
             gameState->SetDifficulty(Difficulty::MEDIUM);
             gameState2->SetDifficulty(Difficulty::MEDIUM);
+            startSignal[0]='2';
             break;
         case 2:
             boardSize = Board::kSmallSize;
             gameState->SetDifficulty(Difficulty::HARD);
             gameState2->SetDifficulty(Difficulty::HARD);
+            startSignal[0]='3';
             break;
         default:
             boardSize = Board::kLargeSize;
             gameState->SetDifficulty(Difficulty::EASY);
             gameState2->SetDifficulty(Difficulty::EASY);
+            startSignal[0]='1';
             break;
     }
     if (modeGroup->checkedId() == 1 && pairGroup->checkedId() == 0) {
@@ -237,16 +259,19 @@ void MainWindow::goClicked() {
     } else if (modeGroup->checkedId() == 0 && pairGroup->checkedId() == 1) {
         gameState->SetMode(Mode::TIME_LIMIT);
         gameState2->SetMode(Mode::TIME_LIMIT_DOUBLE);
+        startSignal[1]='1';
         roomPage();
     } else if (modeGroup->checkedId() == 1 && pairGroup->checkedId() == 1) {
         gameState->SetMode(Mode::FAST_REACTION);
         gameState2->SetMode(Mode::FAST_REACTION_DOUBLE);
+        startSignal[1]='2';
         roomPage();
     }
 
 }
 void MainWindow::DoubleClicked(){
-    if(ready)startGame2();
+
+    if(ready){P1socket->write(startSignal.data());startGame2();}
     else QMessageBox::warning(this,"warning","The other man is not ready yet!");
 }
 //todo 传入随机端口号作为房间号,
@@ -319,7 +344,7 @@ void MainWindow::onSwap(SwapDirection direction) {
 
     auto events = gameState->Swap(pos, direction);//gameState->Swap
     string str= processStrToSend(pos,direction);
-    P1socket->write(str.data());
+   if(ready) P1socket->write(str.data());
     bool swaped = false;
     for (const BoardEvent &event : events) {
         swaped = true;
@@ -668,7 +693,7 @@ void MainWindow::startGame() {
 void MainWindow::startGame2() {
     // Set new UI frame
     delete currentFrame;
-
+   ready= true;
     currentFrame = new QFrame(this);
 
     setCentralWidget(currentFrame);
@@ -726,8 +751,6 @@ void MainWindow::startGame2() {
             map2_[i][j].second = new Jewel(Color::NONE, board2);
             map2_[i][j].second->setGeometry(kJewelWidgetSize * j, kJewelWidgetSize * i, kJewelWidgetSize,
                                             kJewelWidgetSize);//P2不需发射信号
-//            connect(map2_[i][j].second, SIGNAL(Swap(Bejeweled::SwapDirection)), this, SLOT(
-//                    onSwap2(Bejeweled::SwapDirection)));
         }
 
     layout->addWidget(board2, 0, 1);
@@ -770,7 +793,7 @@ void MainWindow::startGame2() {
 void MainWindow::createRoom() {
     server = new QTcpServer();
 //   port=rand()%65535
-    port = 8080;//todo:random
+    port = 8000;//todo:random
     if (!server->listen(QHostAddress::Any,port)) {//监听开始
         qDebug() << server->errorString();
         port=-1;
@@ -784,6 +807,7 @@ void MainWindow::createRoom() {
  */
 void MainWindow::serverNewConnect() {
     //todo:QT弹出提示已经有人加入房间
+    QMessageBox::warning(this,"warning","The other man is already ready!");
     ready= true;
     P1socket = server->nextPendingConnection();
     QObject::connect(P1socket, &QTcpSocket::readyRead, this, &MainWindow::socketReadData);
@@ -822,6 +846,18 @@ void MainWindow::processReadStr(string s) {
         case '4':
             direction = DOWN;
             break;
+        case '5':
+            switch (s[0]) {
+                case '1':gameState->SetDifficulty(EASY);gameState2->SetDifficulty(EASY); boardSize = Board::kLargeSize;break;
+                case '2':gameState->SetDifficulty(MEDIUM);gameState2->SetDifficulty(MEDIUM); boardSize = Board::kMediumSize;break;
+                case '3':gameState->SetDifficulty(HARD);gameState2->SetDifficulty(HARD);boardSize=Board::kSmallSize;break;
+            }
+            switch (s[1]) {
+                case'1':gameState2->SetMode(TIME_LIMIT_DOUBLE);gameState->SetMode(TIME_LIMIT);break;
+                case'2':gameState2->SetMode(FAST_REACTION_DOUBLE);gameState->SetMode(FAST_REACTION);break;
+            }
+            startGame2();
+            return;
     }
     onSwap2(x, y, direction);
 };
@@ -858,6 +894,7 @@ void MainWindow::socketDisconnected() {
  * 加入房间
  */
 void MainWindow::joinRoom(int roomNumber) {
+    //todo by pts roompage
     P1socket = new QTcpSocket();
     QObject::connect(P1socket, &QTcpSocket::readyRead, this, &MainWindow::socketReadData);
     QObject::connect(P1socket, &QTcpSocket::disconnected, this, &MainWindow::socketDisconnected);
@@ -865,8 +902,8 @@ void MainWindow::joinRoom(int roomNumber) {
     port=roomNumber;
     P1socket->abort();
     P1socket->connectToHost(IP, port);
-    if (!P1socket->waitForConnected(3000)) { cout<<"加入失败"; }
-    else {cout<<"加入成功";}  //todo
+    if (!P1socket->waitForConnected(3000)) { cout<<"JOIN DEFEAT"; }
+    else {QMessageBox::warning(this,"warning","JOIN SUCCESS!");;}
 
 }
 

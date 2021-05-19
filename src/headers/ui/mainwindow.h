@@ -106,6 +106,7 @@ private:
     bool uiDrawing2;
     bool ready;
     int port;
+    string startSignal;
     void serverNewConnect();
 
     void joinRoom(int);
@@ -120,7 +121,9 @@ private:
 
     void roomPage();
 
-
+    void registerClicked();
+    void loginClicked();
+    void returnClicked();
 };
 
 #endif // MAINWINDOW_H

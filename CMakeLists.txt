@@ -11,7 +11,6 @@ find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Multimedia REQUIRED)
 find_package(Qt5Network REQUIRED)
 include_directories(src)
-
 add_executable(Bejeweled00
         src/Impl/logic/board.cpp
         src/headers/logic/board.h
@@ -28,6 +27,7 @@ add_executable(Bejeweled00
         src/Impl/ui/jewel.cpp
         src/headers/ui/jewel.h
         src/main.cpp
+        res/main2.cpp
         src/Impl/ui/mainwindow.cpp
         src/headers/ui/mainwindow.h
         src/Impl/components/scoresystem.cpp
