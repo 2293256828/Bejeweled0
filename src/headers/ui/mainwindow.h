@@ -4,8 +4,13 @@
 #include <QMainWindow>
 #include <utility>
 #include <QTcpServer>
+#include <QProgressBar>
 #include "jewel.h"
 #include "src/headers/logic/board.h"
+#include "homepage.h"
+#include "selectpage.h"
+#include "roompage.h"
+#include "scorepage.h"
 
 namespace Bejeweled {
 	class GameState;
@@ -39,18 +44,16 @@ private slots:
 	void exitClicked();
 	void pauseClicked();
     void hintClicked();
-    void DoubleClicked();
+    void doubleClicked();
     void joinClicked();
    //!点击事件
 
    //!交换事件
     void onSwap(Bejeweled::SwapDirection direction);
-
 	void updateScore(int newScore);//更新成绩
+    void updateScore2(int newScore);//更新成绩
 	void updateTimeDisplay(int remain);//更新计时器Label
-
     void onSwap2(int x,int y,Bejeweled::SwapDirection direction);
-
 	void gameEnd(bool highScore);//游戏结束
 	void startHome();//主页
 	void updateHint(Bejeweled::JewelPos pos);//更新提示
@@ -72,12 +75,19 @@ private:
 
 
     //!UI组件
-    QFrame *currentFrame;
-	QButtonGroup *modeGroup;
-	QButtonGroup *buttonGroup;
-	QButtonGroup*pairGroup;
+    QMovie*movie1;
+    QMovie*movie2;
+    QMovie*movie3;
+    QMovie*movie4;
+    QFrame*currentFrame;
+    Homepage*homepage;
+    Selectpage*selectpage;
+    Roompage*roompage;
+    Scorepage*scorepage;
 	QLabel *scoreDisplay;
+    QLabel *scoreDisplay2;
 	QLabel *timeDisplay;
+	QProgressBar* progressBar;
 	QPushButton *pauseButton;
 	QPushButton *hintButton;
     Ui::MainWindow *ui;
@@ -86,7 +96,7 @@ private:
     //!网络
     QTcpServer *server;
     QTcpSocket* P1socket;
-    QTcpSocket*P2socket;
+
     //!成员
 	GameState *gameState;
 	pair<Color,Jewel*> map_[Board::kLargeSize][Board::kLargeSize];//二维数组数据结构,对应位置的宝石颜色与宝石对象
@@ -98,29 +108,24 @@ private:
     bool animationDrawing; // internal drawing lock,某个动画绘制时其他动画不能绘制
     static const int kJewelWidgetSize = 50;//宝石size
 
-
+    int combo1;
+    int combo2;
     //todo 双人模式
     pair<Color,Jewel*> map2_[Board::kLargeSize][Board::kLargeSize];
     GameState *gameState2;
     bool animationDrawing2;
     bool uiDrawing2;
-    bool ready;
+    bool readyDouble;
     int port;
     string startSignal;
+    QString IP;
     void serverNewConnect();
-
     void joinRoom(int);
-
     void socketReadData();
-
     void socketDisconnected();
-
     void processReadStr(string s);
-
-  string processStrToSend(JewelPos pos, SwapDirection direction);
-
+  static string processStrToSend(JewelPos pos, SwapDirection direction);
     void roomPage();
-
     void registerClicked();
     void loginClicked();
     void returnClicked();

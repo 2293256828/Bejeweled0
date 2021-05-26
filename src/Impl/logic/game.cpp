@@ -57,10 +57,9 @@ Game::Game(const GameSettings &settings,QObject *parent) :
  */
 list<BoardEvent> Game::Swap(JewelPos pos, Bejeweled::SwapDirection direction)
 {
-	// update generation factor
     board->setGenerationFactor(modeLogic->getGeneration());
 	list<BoardEvent> events = board->Swap(pos, direction);
-	bool first = true; //Processing First BoardEvent //combo¼Ó³É
+	bool first = true; //Processing First BoardEvent //used for combo
 	for(const BoardEvent& event : events) {
 		if(first && event.type == BoardEvent::DIE) {
             scoreSystem->firstGain(event.getDiePos().size());

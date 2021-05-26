@@ -44,9 +44,6 @@ public:
 	void setNewPos(list<JewelInfo> list) { info = list;}
 	void setDiePos(list<JewelPos> list) { pos = list;}
 
-	// default copy behaviors
-	BoardEvent(const BoardEvent&) = default;
-	BoardEvent& operator=(const BoardEvent&) = default;
 
 private:
 	list<pair<JewelPos,JewelPos>> fall;//fall list  第一个Pos是最开始的位置,第二个Pos是下落的位置

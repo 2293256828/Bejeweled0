@@ -70,14 +70,8 @@ public:
 
 signals:
 	void timeTick(int remain);//send to mainWindow, purpose :更新计时器显示Label
-
-
 	void scoreUpdated(int new_score);//send to mainWindow, purpose :更新成绩显示Label
-
-
 	void gameEnd(bool high_score);//send to mainWindow ,purpose :游戏结束处理
-
-
 	void Hint(Bejeweled::JewelPos pos);//     send to mainWindow ,purpose :更新提示位置
 
 
@@ -94,13 +88,6 @@ private:
 	GameSettings *settings;
 	State state_;
 	Game * game;
-
-
-	//todo 双人
-	Game*game2;
-    //todo 双人
-    void scoreUpdated2(int new_score);
-
 };
 
 }

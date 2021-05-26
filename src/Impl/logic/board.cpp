@@ -62,7 +62,7 @@ list<BoardEvent> Board::Swap(JewelPos pos, SwapDirection direction)
 	list<JewelPos> dieList = Eliminatable(tab);
 	// if not a valid swap, return blank list
 	if(dieList.empty())
-		return events;//交换无效
+		return events;//a invalid swap
 
 	// a valid swap
 	board = tab;
@@ -72,13 +72,13 @@ list<BoardEvent> Board::Swap(JewelPos pos, SwapDirection direction)
 	// first elimination
 	for(JewelPos pos :dieList)
         board[pos.x][pos.y] = 0;
-	// fall->eliminate->fall->eliminate-> ...
+
 	do {
 		//fall
 		newEvent = BoardEvent(BoardEvent::FALL);
         newEvent.setFallPos(Fall(board));
 		events.push_back(newEvent);
-        dieList = Eliminatable(board);
+        dieList = Eliminatable(board);// fall->eliminate->fall->eliminate-> ...
 		if(!dieList.empty()) {
             newEvent = BoardEvent(BoardEvent::DIE);
             newEvent.setDiePos(dieList);
@@ -157,7 +157,7 @@ list<JewelInfo> Board::fullFill(IntTab &tab)
 int Board::PossibleSwap(const IntTab& tab)
 {
 	IntTab tab2 = tab;//tab2:用于假想交换
-	int count = 0;
+	int cnt = 0;
 	// swap right
 	for(int i=0; i != size; ++i)
 		for(int j=0; j != size - 1; ++j) {
@@ -165,12 +165,12 @@ int Board::PossibleSwap(const IntTab& tab)
 			tab2[i][j] = tab2[i][j+1];
 			tab2[i][j+1] = tab[i][j];
 			if(!Eliminatable(tab2).empty()) {//如果存在可消除的位置
-				// record it for hint use
+				//记录
 				lastPossibleSwap.x = i;
                 lastPossibleSwap.y = j;
-				++count;
+				++cnt;
 			}
-			// revert changes
+			// backtrack
 			tab2[i][j] = tab[i][j];
 			tab2[i][j+1] = tab[i][j+1];
 		}
@@ -181,16 +181,16 @@ int Board::PossibleSwap(const IntTab& tab)
 			tab2[i][j] = tab2[i+1][j];
 			tab2[i+1][j] = tab[i][j];
 			if(!Eliminatable(tab2).empty()) {
-				// record it for hint use
+				//record for hint
 				lastPossibleSwap.x = i;
                 lastPossibleSwap.y = j;
-				++count;
+				++cnt;
 			}
 			// revert changes
 			tab2[i][j] = tab[i][j];
 			tab2[i+1][j] = tab[i+1][j];
 		}
-	return count;
+	return cnt;
 }
 /**
  * 检查如果进行了交换,那么能否产生消除

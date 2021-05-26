@@ -23,10 +23,6 @@ public:
 	void Pause();
 	void Resume();
     void Punish(int);
-    // copy inhibited
-	Game(const Game&) = delete;
-	Game& operator=(const Game&) = delete;
-
 signals:
 	void scoreUpdated(int);
 	void timeTick(int);

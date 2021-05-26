@@ -58,8 +58,6 @@ BoardEvent GameState::StartNewGame(int seed)
     game = new Game(*settings);
 	connect(game, SIGNAL(timeTick(int)), this, SIGNAL(timeTick(int)));
 	//game->gameState->mainWindow, purpose:更新时间Label
-
-
 	connect(game, SIGNAL(scoreUpdated(int)), this, SIGNAL(scoreUpdated(int)));
 	//game->gameState->mainWindow, purpose :更新成绩Label
 
@@ -71,16 +69,6 @@ BoardEvent GameState::StartNewGame(int seed)
 	state_ = INGAME;
 	return game->NewGame(seed);
 }
-//todo 双人
-//BoardEvent GameState::StartNewGame2()
-//{
-//    game2 = new Game(*settings);
-//    connect(game2, SIGNAL(scoreUpdated2(int)), this, SIGNAL(scoreUpdated2(int)));
-////    connect(game2, SIGNAL(Hint(JewelPos)), this, SIGNAL(Hint(Bejeweled::JewelPos)));
-////    connect(game2, SIGNAL(gameEnd(int)), this, SLOT(GameEndProcessor_(int)));
-//
-//    return game2->NewGame();
-//}
 
  /**
   * mainWindow.pauseClicked->gameState.Pause->game.Pause->modeLogic.Pause->timer.Pause
