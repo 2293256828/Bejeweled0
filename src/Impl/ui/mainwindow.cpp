@@ -17,6 +17,7 @@
 #include "src/headers/ui/ui_mainwindow.h"
 
 #include "stdlib.h"
+
 using namespace Bejeweled;
 using namespace std;
 
@@ -36,8 +37,12 @@ MainWindow::MainWindow(QWidget *parent) :
         combo1(0),
         combo2(0),
         death1(false),
-        death2(false) {
-    bgplayer=new QMediaPlayer();
+        death2(false),
+        sound_effect2(true),
+        sound_effect1(true),
+        bgMusic(true),
+        gameBgMusic(true){
+    bgplayer = new QMediaPlayer();
     ui->setupUi(this);
     setWindowIcon(QIcon(QPixmap("D:/Bejeweled00/res/green.png")));
     gameState = new GameState();
@@ -48,33 +53,50 @@ MainWindow::MainWindow(QWidget *parent) :
     movie2 = new QMovie();
     movie3 = new QMovie();
     movie4 = new QMovie();
-    timeUpSound=new QMediaPlayer();timeUpSound->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\voice_timeup.wav"));
-    gameBgPlayer=new QMediaPlayer();gameBgPlayer->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\music\\Classic.mp3"));
-    goSound=new QMediaPlayer();goSound->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\voice_go.wav"));
-    goodSound=new QMediaPlayer();goodSound->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\voice_good.wav"));
-    unbelievableSound=new QMediaPlayer();unbelievableSound->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\voice_unbelievable.wav"));
-    excellentSound=new QMediaPlayer();excellentSound->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\voice_excellent.wav"));
-    awesomeSound=new QMediaPlayer();awesomeSound->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\voice_awesome.wav"));
-    combo_2=new QMediaPlayer();combo_2->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\combo_2.wav"));
-    combo_3=new QMediaPlayer();combo_3->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\combo_3.wav"));
-    combo_4=new QMediaPlayer();combo_4->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\combo_4.wav"));
-    combo_5=new QMediaPlayer();combo_5->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\combo_5.wav"));
-    combo_6=new QMediaPlayer();combo_6->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\combo_6.wav"));
-    combo_7=new QMediaPlayer();combo_7->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\combo_7.wav"));
-    tick=new QMediaPlayer();tick->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\tick.wav"));
-    badMove=new QMediaPlayer();badMove->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\badmove.wav"));
-    bgMusicList=new QMediaPlaylist();
+    timeUpSound = new QMediaPlayer();
+    timeUpSound->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\voice_timeup.wav"));
+    gameBgPlayer = new QMediaPlayer();
+    gameBgPlayer->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\music\\Classic.mp3"));
+    goSound = new QMediaPlayer();
+    goSound->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\voice_go.wav"));
+
+    goodSound = new QMediaPlayer();
+    goodSound->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\voice_good.wav"));
+    unbelievableSound = new QMediaPlayer();
+    unbelievableSound->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\voice_unbelievable.wav"));
+    excellentSound = new QMediaPlayer();
+    excellentSound->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\voice_excellent.wav"));
+    awesomeSound = new QMediaPlayer();
+    awesomeSound->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\voice_awesome.wav"));
+    combo_2 = new QMediaPlayer();
+    combo_2->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\combo_2.wav"));
+    combo_3 = new QMediaPlayer();
+    combo_3->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\combo_3.wav"));
+    combo_4 = new QMediaPlayer();
+    combo_4->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\combo_4.wav"));
+    combo_5 = new QMediaPlayer();
+    combo_5->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\combo_5.wav"));
+    combo_6 = new QMediaPlayer();
+    combo_6->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\combo_6.wav"));
+    combo_7 = new QMediaPlayer();
+    combo_7->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\combo_7.wav"));
+    tick = new QMediaPlayer();
+    tick->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\tick.wav"));
+    badMove = new QMediaPlayer();
+    badMove->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\badmove.wav"));
+    bgMusicList = new QMediaPlaylist();
     bgMusicList->addMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\music\\Mainmenu.mp3"));
     bgMusicList->addMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\music\\Classic.mp3"));
     bgMusicList->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
     bgplayer->setPlaylist(bgMusicList);
-    hit=new QMediaPlayer();
+    hit = new QMediaPlayer();
     redPa.setColor(QPalette::WindowText, Qt::red);
     greenPa.setColor(QPalette::WindowText, Qt::green);
     bluePa.setColor(QPalette::WindowText, Qt::blue);
-    greyPa.setColor(QPalette::WindowText,Qt::darkCyan);
-    blackPa.setColor(QPalette::WindowText,Qt::black);
+    greyPa.setColor(QPalette::WindowText, Qt::darkCyan);
+    blackPa.setColor(QPalette::WindowText, Qt::black);
     hit->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\gem_hit.wav"));
+
     startHome();
 }
 
@@ -91,7 +113,7 @@ MainWindow::~MainWindow() {
  */
 void MainWindow::startHome() {
     bgMusicList->setCurrentIndex(1);
-    bgplayer->play();
+    if(bgMusic) bgplayer->play();
     homepage = new Homepage(this);
     QPalette palette;  //创建一个调色板的对象
     QPixmap pixmap;
@@ -250,8 +272,8 @@ void MainWindow::goClicked() {
 void MainWindow::doubleClicked() {
 
     if (readyDouble) {
-        int seed=rand();
-        startSignal+=to_string(seed);
+        int seed = rand();
+        startSignal += to_string(seed);
         socket->write(startSignal.data());
         startGame2(seed);
     } else QMessageBox::warning(this, "warning", "The other man is not ready yet!");
@@ -292,15 +314,16 @@ void MainWindow::pauseClicked() {
 
     }
 }
-
 void MainWindow::updateTimeDisplay(int remain) {
-    if(remain<=90)progressBar->setStyleSheet("QProgressBar{color:grey;} QProgressBar::chunk{background-color: rgb(0,255,255)}");
-    if(remain<60)progressBar->setStyleSheet("QProgressBar{color:grey;} QProgressBar::chunk{background-color: rgb(255,255,0)}");
-    if(remain<20)progressBar->setStyleSheet("QProgressBar{color:grey;} QProgressBar::chunk{background-color: rgb(255,99,71)}");
+    if (remain <= 90)
+        progressBar->setStyleSheet("QProgressBar{color:grey;} QProgressBar::chunk{background-color: rgb(0,255,255)}");
+    if (remain < 60)
+        progressBar->setStyleSheet("QProgressBar{color:grey;} QProgressBar::chunk{background-color: rgb(255,255,0)}");
+    if (remain < 20)
+        progressBar->setStyleSheet("QProgressBar{color:grey;} QProgressBar::chunk{background-color: rgb(255,99,71)}");
     progressBar->setValue((120 - remain) / 1.2);
     update();
 }
-
 /**
  *slot  交换
  * @param direction
@@ -308,10 +331,11 @@ void MainWindow::updateTimeDisplay(int remain) {
 void MainWindow::onSwap(SwapDirection direction) {
     if (uiDrawing || gameState->state() != GameState::INGAME)
         return;
+    if(sound_effect1)tick->play();
     gameState->Pause();
     pauseButton->setEnabled(false);
     hintButton->setEnabled(false);
-    tick->play();
+
     auto *sender = (Jewel *) this->sender();
     int x = sender->geometry().y() / 50;
     int y = sender->geometry().x() / 50;
@@ -331,7 +355,7 @@ void MainWindow::onSwap(SwapDirection direction) {
     }
     if (!swaped) {
         swapJewelInMap(x, y, direction);//如果此次交换无效,那么再换回来
-        badMove->play();
+        if(sound_effect1)badMove->play();
         update();
     }
     gameState->Resume();
@@ -339,7 +363,6 @@ void MainWindow::onSwap(SwapDirection direction) {
     hintButton->setEnabled(true);
     uiDrawing = false;
 }
-
 void MainWindow::onSwap2(int x, int y, SwapDirection direction) {
     if (uiDrawing2 || gameState2->state() != GameState::INGAME)
         return;
@@ -361,11 +384,10 @@ void MainWindow::onSwap2(int x, int y, SwapDirection direction) {
     }
     uiDrawing2 = false;
 }
-
 void MainWindow::gameEnd(bool highScore) {
     string end;//end 结束进行的通知代号
-    bgplayer->play();
-    timeUpSound->play();
+    if(bgMusic)bgplayer->play();
+    if(sound_effect1)timeUpSound->play();
     gameBgPlayer->stop();
     if (highScore) {
         QMessageBox::information(this, "Congratulations!", "You have achieved a new high score!");
@@ -401,7 +423,6 @@ void MainWindow::gameEnd(bool highScore) {
         }
     }
 }
-
 /**
  * 处理收到的数据
  * @param s
@@ -451,7 +472,7 @@ void MainWindow::processReadStr(string s) {
                     gameState->SetMode(FAST_REACTION);
                     break;
             }
-            startGame2( atoi(s.substr(5,s.length()-5).c_str()));//correspondence
+            startGame2(atoi(s.substr(5, s.length() - 5).c_str()));//correspondence
             return;
         case '6':
             QPalette redPa;
@@ -499,7 +520,6 @@ void MainWindow::processReadStr(string s) {
     }
     onSwap2(x, y, direction);
 };
-
 /**
  * 事件的动画表示
  * @param event
@@ -526,7 +546,7 @@ void MainWindow::drawBoardEvent(const BoardEvent &event) {
             break;
         }
         case BoardEvent::DIE: {
-            int count=0;
+            int count = 0;
             for (JewelPos pos :event.getDiePos()) {
                 //todo gif:消除
                 Jewel *widget = map_[pos.x][pos.y].second;
@@ -542,15 +562,37 @@ void MainWindow::drawBoardEvent(const BoardEvent &event) {
                 map_[pos.x][pos.y].second->SetColor(Color::NONE);
                 map_[pos.x][pos.y].first = Color::NONE;
             }
-            if(count>=6){combo1++;  combo1Display->setText(QString::number(combo1));}
+            if (count >= 6) {
+                combo1++;
+                combo1Display->setText(QString::number(combo1));
+            }
             switch (combo1) {
-                case 0:combo_2->play();break;
-                case 1:combo1Display->setPalette(greenPa);combo_3->play();break;
-                case 2:combo1Display->setPalette(yellowPa);combo_4->play();break;
-                case 3:combo1Display->setPalette(bluePa);combo_5->play();break;
-                case 4:combo1Display->setPalette(greyPa);combo_6->play();break;
-                case 5:combo1Display->setPalette(redPa);combo_7->play();break;
-                default:combo1Display->setPalette(redPa);combo_7->play();
+                case 0:
+                    if(sound_effect1)combo_2->play();
+                    break;
+                case 1:
+                    combo1Display->setPalette(greenPa);
+                    if(sound_effect1)combo_3->play();
+                    break;
+                case 2:
+                    combo1Display->setPalette(yellowPa);
+                    if(sound_effect1)combo_4->play();
+                    break;
+                case 3:
+                    combo1Display->setPalette(bluePa);
+                    if(sound_effect1)combo_5->play();
+                    break;
+                case 4:
+                    combo1Display->setPalette(greyPa);
+                    if(sound_effect1)combo_6->play();
+                    break;
+                case 5:
+                    combo1Display->setPalette(redPa);
+                    if(sound_effect1)combo_7->play();
+                    break;
+                default:
+                    combo1Display->setPalette(redPa);
+                    if(sound_effect1)combo_7->play();
             }
             // wait
             QTimer timer;
@@ -612,14 +654,50 @@ void MainWindow::drawBoardEvent(const BoardEvent &event) {
             connect(&timer, &QTimer::timeout, [=]() {
                 animationDrawing = false;
             });
-            hit->play();
+            if(sound_effect1)hit->play();
             switch (combo1) {
-                case 0:break;
-                case 1:goodSound->play();break;
-                case 2:awesomeSound->play();break;
-                case 3:excellentSound->play();break;
-                case 4:unbelievableSound->play();break;
-                default:unbelievableSound->play();
+                case 0:
+                    break;
+                case 1:
+                    if(sound_effect1)goodSound->play();
+                    goodLabel->show();
+                    goodAnimation->start();
+                    QTimer::singleShot(1000, this, [=]() {
+                        goodLabel->hide();
+                    });
+                    break;
+                case 2:
+                    if(sound_effect1)awesomeSound->play();
+                    awesomeLabel->show();
+                    awesomeAnimation->start();
+                    QTimer::singleShot(1200, this, [=]() {
+                        awesomeLabel->hide();
+                    });
+                    break;
+                case 3:
+                    if(sound_effect1)excellentSound->play();
+                    excellentLabel->show();
+                    excellentAnimation->start();
+                    QTimer::singleShot(1400, this, [=]() {
+                        excellentLabel->hide();
+                    });
+                    break;
+                case 4:
+                    if(sound_effect1)unbelievableSound->play();
+                    unbelievableLabel->show();
+                    unbelievableAnimation->start();
+                    QTimer::singleShot(1600, this, [=]() {
+                        unbelievableLabel->hide();
+                    });
+                    break;
+                default:
+                    if(sound_effect1)unbelievableSound->play();
+                    unbelievableLabel->show();
+                    unbelievableAnimation->start();
+                    QTimer::singleShot(1600, this, [=]() {
+                        unbelievableLabel->hide();
+                    });
+
             }
             combo1++;
             combo1Display->setText(QString::number(combo1));
@@ -633,7 +711,6 @@ void MainWindow::drawBoardEvent(const BoardEvent &event) {
 
     update();
 }
-
 void MainWindow::drawBoardEvent2(const BoardEvent &event) {
     switch (event.type) {
         case BoardEvent::NEW: {
@@ -656,20 +733,36 @@ void MainWindow::drawBoardEvent2(const BoardEvent &event) {
             break;
         }
         case BoardEvent::DIE: {
-            int count=0;
+            int count = 0;
             for (JewelPos pos :event.getDiePos()) {
                 map2_[pos.x][pos.y].second->SetColor(Color::NONE);
                 map2_[pos.x][pos.y].first = Color::NONE;
+                count++;
             }
-            if(count>=6){combo2++;  combo2Display->setText(QString::number(combo2));}
+            if (count >= 6) {
+                combo2++;
+                combo2Display->setText(QString::number(combo2));
+            }
             switch (combo2) {
-                case 0:break;
-                case 1:combo2Display->setPalette(greenPa);break;
-                case 2:combo2Display->setPalette(yellowPa);break;
-                case 3:combo2Display->setPalette(bluePa);break;
-                case 4:combo2Display->setPalette(greyPa);break;
-                case 5:combo2Display->setPalette(redPa);break;
-                default:combo2Display->setPalette(redPa);
+                case 0:
+                    break;
+                case 1:
+                    combo2Display->setPalette(greenPa);
+                    break;
+                case 2:
+                    combo2Display->setPalette(yellowPa);
+                    break;
+                case 3:
+                    combo2Display->setPalette(bluePa);
+                    break;
+                case 4:
+                    combo2Display->setPalette(greyPa);
+                    break;
+                case 5:
+                    combo2Display->setPalette(redPa);
+                    break;
+                default:
+                    combo2Display->setPalette(redPa);
             }
 
             // wait
@@ -732,6 +825,50 @@ void MainWindow::drawBoardEvent2(const BoardEvent &event) {
             connect(&timer, &QTimer::timeout, [=]() {
                 animationDrawing2 = false;
             });
+            switch (combo2) {
+                case 0:
+                    break;
+                case 1:
+                    if(sound_effect2)goodSound->play();
+                    goodLabel2->show();
+                    goodAnimation2->start();
+                    QTimer::singleShot(1000, this, [=]() {
+                        goodLabel2->hide();
+                    });
+                    break;
+                case 2:
+                    if(sound_effect2)awesomeSound->play();
+                    awesomeLabel2->show();
+                    awesomeAnimation2->start();
+                    QTimer::singleShot(1200, this, [=]() {
+                        awesomeLabel2->hide();
+                    });
+                    break;
+                case 3:
+                    if(sound_effect2)excellentSound->play();
+                    excellentLabel2->show();
+                    excellentAnimation2->start();
+                    QTimer::singleShot(1400, this, [=]() {
+                        excellentLabel2->hide();
+                    });
+                    break;
+                case 4:
+                    if(sound_effect2)unbelievableSound->play();
+                    unbelievableLabel2->show();
+                    unbelievableAnimation2->start();
+                    QTimer::singleShot(1600, this, [=]() {
+                        unbelievableLabel2->hide();
+                    });
+                    break;
+                default:
+                    if(sound_effect2)unbelievableSound->play();
+                    unbelievableLabel2->show();
+                    unbelievableAnimation2->start();
+                    QTimer::singleShot(1600, this, [=]() {
+                        unbelievableLabel2->hide();
+                    });
+
+            }
             combo2++;
             combo2Display->setText(QString::number(combo2));
             while (animationDrawing2)
@@ -743,34 +880,74 @@ void MainWindow::drawBoardEvent2(const BoardEvent &event) {
     }
     update();
 }
-
 /**
  * 最上层的入口
  */
 void MainWindow::startGame() {
     currentFrame = new QFrame(this);
+    excellentLabel = new QLabel(currentFrame);
+    goodLabel=new QLabel(currentFrame);
+    unbelievableLabel=new QLabel(currentFrame);
+    awesomeLabel=new QLabel(currentFrame);
+    excellentLabel->resize(206, 150);
+    goodLabel->resize(216, 192);
+    unbelievableLabel->resize(231, 248);
+    awesomeLabel->resize(216, 193);
+    goodLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\goodjob.png"));
+    excellentLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\EXCELLENT.png"));
+    awesomeLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\awesome.png"));
+    unbelievableLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\unbelievable.png"));
+    excellentLabel->move(550, 260);
+    awesomeLabel->move(550, 260);
+    goodLabel->move(550, 260);
+    unbelievableLabel->move(550, 260);
+    unbelievableLabel->hide();
+    awesomeLabel->hide();
+    goodLabel->hide();
+    excellentLabel->hide();
+    goodAnimation = new QPropertyAnimation(goodLabel, "geometry");
+    goodAnimation->setEasingCurve(QEasingCurve::InOutCubic);
+    goodAnimation->setDuration(1000);
+    goodAnimation->setStartValue(QRect(goodLabel->x(), goodLabel->y(), 1, 1));
+    goodAnimation->setEndValue(QRect(goodLabel->x(), goodLabel->y(), 216, 192));
+
+    awesomeAnimation = new QPropertyAnimation(awesomeLabel, "geometry");
+    awesomeAnimation->setEasingCurve(QEasingCurve::InOutCubic);
+    awesomeAnimation->setDuration(1200);
+    awesomeAnimation->setStartValue(QRect(awesomeLabel->x(), awesomeLabel->y(), 1, 1));
+    awesomeAnimation->setEndValue(QRect(awesomeLabel->x(), awesomeLabel->y(), 216, 193));
+
+    unbelievableAnimation = new QPropertyAnimation(unbelievableLabel, "geometry");
+    unbelievableAnimation->setEasingCurve(QEasingCurve::InOutCubic);
+    unbelievableAnimation->setDuration(1600);
+    unbelievableAnimation->setStartValue(QRect(unbelievableLabel->x(), unbelievableLabel->y(), 1, 1));
+    unbelievableAnimation->setEndValue(QRect(unbelievableLabel->x(), unbelievableLabel->y(), 231, 248));
+
+    excellentAnimation = new QPropertyAnimation(excellentLabel, "geometry");
+    excellentAnimation->setEasingCurve(QEasingCurve::InOutCubic);
+    excellentAnimation->setDuration(1400);
+    excellentAnimation->setStartValue(QRect(excellentLabel->x(), excellentLabel->y(), 1, 1));
+    excellentAnimation->setEndValue(QRect(excellentLabel->x(), excellentLabel->y(), 206, 150)); // normal size
     bgplayer->stop();
-    gameBgPlayer->play();
+    if(gameBgMusic)gameBgPlayer->play();
     setCentralWidget(currentFrame);
     auto *under_frame = new QFrame(currentFrame);
     auto *layout = new QGridLayout(currentFrame);
     auto *under_layout = new QGridLayout(under_frame);
     auto *board = new QLabel(currentFrame);
-    combo1Label=new QLabel("COMBO",currentFrame);
-    combo1Display=new QLabel("",currentFrame);
+    combo1Label = new QLabel("COMBO", currentFrame);
+    combo1Display = new QLabel("", currentFrame);
     board->setPixmap(QPixmap("D:/Bejeweled00/res/img.png"));
     board->setMinimumHeight(kJewelWidgetSize * (boardSize));
     board->setMinimumWidth(kJewelWidgetSize * (boardSize));
     board->setMaximumHeight(kJewelWidgetSize * (boardSize));
     board->setMaximumWidth(kJewelWidgetSize * (boardSize));
     // set up appropriate fonts and colors
-    QPalette blue_pa;
-    blue_pa.setColor(QPalette::WindowText, Qt::blue);
     auto *scoreLable = new QLabel(tr("SCORE"), currentFrame);
     scoreLable->setFont(QFont("Microsoft YaHei", 15, 150));
     scoreDisplay = new QLabel(currentFrame);
     scoreDisplay->setFont(QFont("Microsoft YaHei", 15, 150));
-    scoreDisplay->setPalette(blue_pa);
+    scoreDisplay->setPalette(bluePa);
     auto *timeUsedLabel = new QLabel(tr("TIME USED"), currentFrame);
     timeUsedLabel->setFont(QFont("Microsoft YaHei", 15, 150));
     timeUsedLabel->resize(200, 100);
@@ -789,6 +966,7 @@ void MainWindow::startGame() {
     connect(abort_button, SIGNAL(clicked()), this, SLOT(exitClicked()));
     resize(800, 500);
     move(400, 100);
+
     pauseButton = new JewelButton(under_frame);
     hintButton = new JewelButton(under_frame);
     hintButton->setText(tr("Hint"));
@@ -796,12 +974,12 @@ void MainWindow::startGame() {
     connect(pauseButton, SIGNAL(clicked()), this, SLOT(pauseClicked()));
     connect(hintButton, SIGNAL(clicked()), this, SLOT(hintClicked()));
     scoreLable->move(550, 130);
-    scoreDisplay->move(550,90);
-    combo1Label->move(550,240);
+    scoreDisplay->move(550, 90);
+    combo1Label->move(550, 240);
     combo1Label->setFont(QFont("Microsoft YaHei", 15, 150));
-    combo1Display->move(550,200);
+    combo1Display->move(550, 200);
     combo1Display->setFont(QFont("Microsoft YaHei", 15, 150));
-    under_layout->addWidget(new QLabel("",under_frame),2,0);
+    under_layout->addWidget(new QLabel("", under_frame), 2, 0);
     under_layout->addWidget(progressBar, 3, 0);
     under_layout->addWidget(hintButton, 4, 0);
     under_layout->addWidget(pauseButton, 5, 0);
@@ -827,19 +1005,108 @@ void MainWindow::startGame() {
     connect(gameState, SIGNAL(scoreUpdated(int)), this, SLOT(updateScore(int)));
     //gameState->mainWindow, purpose:更新成绩QLabel updateScore()
 //!连接信号和槽
-     goSound->play();
+    if(sound_effect1)goSound->play();
 }
-
 /**
  * 双人模式入口
  */
 void MainWindow::startGame2(int seed) {
     // Set new UI frame
     bgplayer->stop();
-    gameBgPlayer->play();
+    if(gameBgMusic)gameBgPlayer->play();
     death2 = false;
     death1 = false;
     currentFrame = new QFrame(this);
+    excellentLabel = new QLabel(currentFrame);
+    goodLabel=new QLabel(currentFrame);
+    unbelievableLabel=new QLabel(currentFrame);
+    awesomeLabel=new QLabel(currentFrame);
+    excellentLabel->resize(206, 150);
+    goodLabel->resize(216, 192);
+    unbelievableLabel->resize(231, 248);
+    awesomeLabel->resize(216, 193);
+    goodLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\goodjob.png"));
+    excellentLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\EXCELLENT.png"));
+    awesomeLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\awesome.png"));
+    unbelievableLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\unbelievable.png"));
+    excellentLabel->move(540, 260);
+    awesomeLabel->move(540, 260);
+    goodLabel->move(540, 260);
+    unbelievableLabel->move(540, 260);
+    unbelievableLabel->hide();
+    awesomeLabel->hide();
+    goodLabel->hide();
+    excellentLabel->hide();
+    goodAnimation = new QPropertyAnimation(goodLabel, "geometry");
+    goodAnimation->setEasingCurve(QEasingCurve::InOutCubic);
+    goodAnimation->setDuration(1000);
+    goodAnimation->setStartValue(QRect(goodLabel->x()-216, goodLabel->y(), 1, 1));
+    goodAnimation->setEndValue(QRect(goodLabel->x(), goodLabel->y(), 216, 192));
+
+    awesomeAnimation = new QPropertyAnimation(awesomeLabel, "geometry");
+    awesomeAnimation->setEasingCurve(QEasingCurve::InOutCubic);
+    awesomeAnimation->setDuration(1200);
+    awesomeAnimation->setStartValue(QRect(awesomeLabel->x()-216, awesomeLabel->y(), 1, 1));
+    awesomeAnimation->setEndValue(QRect(awesomeLabel->x(), awesomeLabel->y(), 216, 193));
+
+    unbelievableAnimation = new QPropertyAnimation(unbelievableLabel, "geometry");
+    unbelievableAnimation->setEasingCurve(QEasingCurve::InOutCubic);
+    unbelievableAnimation->setDuration(1600);
+    unbelievableAnimation->setStartValue(QRect(unbelievableLabel->x()-231, unbelievableLabel->y(), 1, 1));
+    unbelievableAnimation->setEndValue(QRect(unbelievableLabel->x(), unbelievableLabel->y(), 231, 248));
+
+
+    excellentAnimation = new QPropertyAnimation(excellentLabel, "geometry");
+    excellentAnimation->setEasingCurve(QEasingCurve::InOutCubic);
+    excellentAnimation->setDuration(1400);
+    excellentAnimation->setStartValue(QRect(excellentLabel->x()-206, excellentLabel->y(), 1, 1));
+    excellentAnimation->setEndValue(QRect(excellentLabel->x(), excellentLabel->y(), 206, 150)); // normal size
+
+
+    excellentLabel2 = new QLabel(currentFrame);
+    goodLabel2=new QLabel(currentFrame);
+    unbelievableLabel2=new QLabel(currentFrame);
+    awesomeLabel2=new QLabel(currentFrame);
+    excellentLabel2->resize(206, 150);
+    goodLabel2->resize(216, 192);
+    unbelievableLabel2->resize(231, 248);
+    awesomeLabel2->resize(216, 193);
+    goodLabel2->setPixmap(QPixmap("D:\\Bejeweled00\\res\\goodjob2.png"));
+    excellentLabel2->setPixmap(QPixmap("D:\\Bejeweled00\\res\\EXCELLENT2.png"));
+    awesomeLabel2->setPixmap(QPixmap("D:\\Bejeweled00\\res\\awesome2.png"));
+    unbelievableLabel2->setPixmap(QPixmap("D:\\Bejeweled00\\res\\unbelievable2.png"));
+    excellentLabel2->move(600, 260);
+    awesomeLabel2->move(600, 260);
+    goodLabel2->move(600, 260);
+    unbelievableLabel2->move(600, 260);
+    unbelievableLabel2->hide();
+    awesomeLabel2->hide();
+    goodLabel2->hide();
+    excellentLabel2->hide();
+    goodAnimation2 = new QPropertyAnimation(goodLabel2, "geometry");
+    goodAnimation2->setEasingCurve(QEasingCurve::InOutCubic);
+    goodAnimation2->setDuration(1000);
+    goodAnimation2->setStartValue(QRect(goodLabel2->x()+216, goodLabel2->y(), 1, 1));
+    goodAnimation2->setEndValue(QRect(goodLabel2->x(), goodLabel2->y(), 216, 192));
+
+    awesomeAnimation2 = new QPropertyAnimation(awesomeLabel2, "geometry");
+    awesomeAnimation2->setEasingCurve(QEasingCurve::InOutCubic);
+    awesomeAnimation2->setDuration(1200);
+    awesomeAnimation2->setStartValue(QRect(awesomeLabel2->x()+216, awesomeLabel2->y(), 1, 1));
+    awesomeAnimation2->setEndValue(QRect(awesomeLabel2->x(), awesomeLabel2->y(), 216, 193));
+
+    unbelievableAnimation2 = new QPropertyAnimation(unbelievableLabel2, "geometry");
+    unbelievableAnimation2->setEasingCurve(QEasingCurve::InOutCubic);
+    unbelievableAnimation2->setDuration(1600);
+    unbelievableAnimation2->setStartValue(QRect(unbelievableLabel2->x()+231, unbelievableLabel2->y(), 1, 1));
+    unbelievableAnimation2->setEndValue(QRect(unbelievableLabel2->x(), unbelievableLabel2->y(), 231, 248));
+
+    excellentAnimation2 = new QPropertyAnimation(excellentLabel2, "geometry");
+    excellentAnimation2->setEasingCurve(QEasingCurve::InOutCubic);
+    excellentAnimation2->setDuration(1400);
+    excellentAnimation2->setStartValue(QRect(excellentLabel2->x()+206, excellentLabel2->y(), 1, 1));
+    excellentAnimation2->setEndValue(QRect(excellentLabel2->x(), excellentLabel2->y(), 206, 150)); // normal size
+
     QPalette palette;  //创建一个调色板的对象
     QPixmap pixmap;
     pixmap.load("D:/Bejeweled00/res/img.png");
@@ -853,12 +1120,12 @@ void MainWindow::startGame2(int seed) {
     auto *under_frame = new QFrame(currentFrame);
     auto *under_layout = new QGridLayout(under_frame);
     auto *board = new QLabel(currentFrame);
-    auto*P1=new QLabel(currentFrame);
+    auto *P1 = new QLabel(currentFrame);
     P1->setPixmap(QPixmap("D:/Bejeweled00/res/P1.png"));
-    P1->move(533,420);
-    auto*P2=new QLabel(currentFrame);
+    P1->move(0, 650);
+    auto *P2 = new QLabel(currentFrame);
     P2->setPixmap(QPixmap("D:/Bejeweled00/res/P2.png"));
-    P2->move(697,420);
+    P2->move(1240, 650);
     board->setPixmap(QPixmap("D:/Bejeweled00/res/img.png"));
     board->setMinimumHeight(kJewelWidgetSize * (boardSize));
     board->setMinimumWidth(kJewelWidgetSize * (boardSize));
@@ -928,23 +1195,32 @@ void MainWindow::startGame2(int seed) {
     label2->move(700, 50);
     scoreDisplay->move(632, 100);
     scoreDisplay->setAlignment(Qt::AlignRight);
-     auto *VS= new QLabel(currentFrame);
-     VS->setPixmap(QPixmap("D:/Bejeweled00/res/vs2.png"));
-     VS->move(530,200);
+    auto *VS = new QLabel(currentFrame);
+    VS->setPixmap(QPixmap("D:/Bejeweled00/res/vs2.png"));
+    VS->move(530, 380);
     scoreDisplay2->move(710, 65);
     scoreDisplay2->resize(200, 100);
     scoreDisplay->setAlignment(Qt::AlignLeft);
-    combo1Label=new QLabel("COMBO",currentFrame);combo2Label=new QLabel("COMBO",currentFrame);
-    combo1Label->setPalette(bluePa);combo2Label->setPalette(redPa);
-    combo1Label->setFont(QFont("Microsoft YaHei", 15, 150));combo2Label->setFont(QFont("Microsoft YaHei", 15, 150));
-    combo1Display=new QLabel("",currentFrame);combo2Display=new QLabel("",currentFrame);
-    combo1Display->setFont(QFont("Microsoft YaHei", 15, 150));combo2Display->setFont(QFont("Microsoft YaHei", 15, 150));
-    combo1Label->move(590,130);combo1Display->move(610,180);combo1Display->resize(20,20);
-    combo2Label->move(700,130);combo2Display->move(720,180);combo2Display->resize(20,20);
-    board->move(10,50);
-    board2->move(900,50);
-    under_frame->move(200,500);
-    under_frame->resize(1000,300);
+    combo1Label = new QLabel("COMBO", currentFrame);
+    combo2Label = new QLabel("COMBO", currentFrame);
+    combo1Label->setPalette(bluePa);
+    combo2Label->setPalette(redPa);
+    combo1Label->setFont(QFont("Microsoft YaHei", 15, 150));
+    combo2Label->setFont(QFont("Microsoft YaHei", 15, 150));
+    combo1Display = new QLabel("", currentFrame);
+    combo2Display = new QLabel("", currentFrame);
+    combo1Display->setFont(QFont("Microsoft YaHei", 15, 150));
+    combo2Display->setFont(QFont("Microsoft YaHei", 15, 150));
+    combo1Label->move(590, 130);
+    combo1Display->move(610, 180);
+    combo1Display->resize(20, 20);
+    combo2Label->move(700, 130);
+    combo2Display->move(720, 180);
+    combo2Display->resize(20, 20);
+    board->move(10, 50);
+    board2->move(900, 50);
+    under_frame->move(200, 500);
+    under_frame->resize(1000, 300);
     currentFrame->show();
     drawBoardEvent(gameState->StartNewGame(seed));
     drawBoardEvent2(gameState2->StartNewGame(seed));
@@ -957,25 +1233,23 @@ void MainWindow::startGame2(int seed) {
     //gameState->mainWindow, purpose:更新成绩QLabel updateScore()
     connect(gameState2, SIGNAL(scoreUpdated(int)), this, SLOT(updateScore2(int)));
 //!连接信号和槽
-    goSound->play();
+    if(sound_effect1)goSound->play();
 }
-
-//!网络QT通信
+//!网络Qt通信
 /**创建房间
  *
  */
 void MainWindow::createRoom() {
     server = new QTcpServer();
-    port = rand()%64511+1024;//todo:random
-    while(!server->listen(QHostAddress::Any, port)) {//监听开始
+    port = rand() % 64511 + 1024;//todo:random
+    while (!server->listen(QHostAddress::Any, port)) {//监听开始
         qDebug() << server->errorString();
-        QMessageBox::warning(this, "DEFEAT", "OCCUPIED PORT:"+QString::number(port)+"\nFINDING ANOTHER...");
-        port = rand()%64511+1024;
+        QMessageBox::warning(this, "DEFEAT", "OCCUPIED PORT:" + QString::number(port) + "\nFINDING ANOTHER...");
+        port = rand() % 64511 + 1024;
     };
-    QMessageBox::information(this, "SUCCESS", "PORT HAVE OPENED ON :"+QString::number(port));
+    QMessageBox::information(this, "SUCCESS", "PORT HAVE OPENED ON :" + QString::number(port));
     connect(server, &QTcpServer::newConnection, this, &MainWindow::serverNewConnect);
 }
-
 void MainWindow::joinRoom(int roomNumber) {
     socket = new QTcpSocket();
     QObject::connect(socket, &QTcpSocket::readyRead, this, &MainWindow::socketReadData);
@@ -984,11 +1258,13 @@ void MainWindow::joinRoom(int roomNumber) {
     port = roomNumber;
     socket->abort();
     socket->connectToHost(IP, port);
-    if (!socket->waitForConnected(3000)) {QMessageBox::warning(this, "DEFEAT", "JOIN DEFEAT!"); }
-    else { QMessageBox::information(this, "SUCCESS", "JOIN SUCCESS!"); readyDouble= true;}
+    if (!socket->waitForConnected(3000)) { QMessageBox::warning(this, "DEFEAT", "JOIN DEFEAT!"); }
+    else {
+        QMessageBox::information(this, "SUCCESS", "JOIN SUCCESS!");
+        readyDouble = true;
+    }
 
 }
-
 /**
  * 读取传输的数据
  */
@@ -1000,8 +1276,6 @@ void MainWindow::socketReadData() {
         processReadStr(s);
     }
 }
-
-
 /**
  * 处理将要发送的数据
  */
@@ -1028,17 +1302,14 @@ string MainWindow::processStrToSend(JewelPos pos, SwapDirection direction) {
     }
     return str;
 }
-
 void MainWindow::socketDisconnected() {
     QMessageBox::warning(this, "HINT", "The other man has disconnected!");
     readyDouble = false;
 }
-
 /**
  * 被连接
  */
 void MainWindow::serverNewConnect() {
-
     QMessageBox::warning(this, "HINT", "READY!");
     readyDouble = true;
     socket = server->nextPendingConnection();
@@ -1247,6 +1518,7 @@ bool MainWindow::swapJewelInMap(int x, int y, SwapDirection direction) {
     update();
     return true;
 }
+
 bool MainWindow::swapJewelInMap2(int x, int y, SwapDirection direction) {
     // TODO animate it
     switch (direction) {

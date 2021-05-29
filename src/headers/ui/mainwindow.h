@@ -12,7 +12,7 @@
 #include "selectpage.h"
 #include "roompage.h"
 #include "scorepage.h"
-
+#include <QPropertyAnimation>
 namespace Bejeweled {
 	class GameState;
 }
@@ -97,7 +97,27 @@ private:
 	QProgressBar* progressBar;
 	QPushButton *pauseButton;
 	QPushButton *hintButton;
+
+
     QLabel*excellentLabel;
+    QPropertyAnimation *excellentAnimation;
+    QLabel*awesomeLabel;
+    QPropertyAnimation*awesomeAnimation;
+    QLabel*goodLabel;
+    QPropertyAnimation*goodAnimation;
+    QLabel*unbelievableLabel;
+    QPropertyAnimation*unbelievableAnimation;
+
+    QLabel*excellentLabel2;
+    QPropertyAnimation *excellentAnimation2;
+    QLabel*awesomeLabel2;
+    QPropertyAnimation*awesomeAnimation2;
+    QLabel*goodLabel2;
+    QPropertyAnimation*goodAnimation2;
+    QLabel*unbelievableLabel2;
+    QPropertyAnimation*unbelievableAnimation2;
+
+
     Ui::MainWindow *ui;
     //!UI×é¼þ
     //!gif
@@ -107,6 +127,10 @@ private:
     QMovie*movie4;
     //!gif
     //!Music
+    bool sound_effect2;
+    bool sound_effect1;
+    bool bgMusic;
+    bool gameBgMusic;
     QMediaPlayer*goSound;
     QMediaPlayer*timeUpSound;
     QMediaPlayer*goodSound;

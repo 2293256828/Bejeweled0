@@ -19,7 +19,8 @@ protected:
 	void paintEvent(QPaintEvent *event) override;
     bool event(QEvent *e) override;
 
-
+private:
+    bool sound_effect;
 
 };
 
