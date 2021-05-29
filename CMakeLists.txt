@@ -31,7 +31,7 @@ add_executable(Bejeweled00
         src/headers/ui/mainwindow.h
         src/Impl/components/scoresystem.cpp
         src/headers/components/scoresystem.h
-        src/headers/constant.h src/Impl/ui/homepage.cpp src/headers/ui/homepage.h src/Impl/ui/selectpage.cpp src/headers/ui/selectpage.h src/Impl/ui/roompage.cpp src/headers/ui/roompage.h src/Impl/ui/scorepage.cpp src/headers/ui/scorepage.h )
+        src/Impl/ui/homepage.cpp src/headers/ui/homepage.h src/Impl/ui/selectpage.cpp src/headers/ui/selectpage.h src/Impl/ui/roompage.cpp src/headers/ui/roompage.h src/Impl/ui/scorepage.cpp src/headers/ui/scorepage.h )
 target_link_libraries(Bejeweled00 Qt5::Core)
 target_link_libraries(Bejeweled00 Qt5::Widgets)
 target_link_libraries(Bejeweled00 Qt5::Multimedia)

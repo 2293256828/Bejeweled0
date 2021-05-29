@@ -1,11 +1,14 @@
 #include <QPainter>
 #include <ctime>
 #include <cstdlib>
+#include "QEvent"
 #include "src/headers/ui/jewelbutton.h"
+
 /**
  * ¶¯Ì¬Button
  * @param parent
  */
+
 JewelButton::JewelButton(QWidget *parent) :
 	QPushButton(parent)
 {
@@ -15,7 +18,30 @@ JewelButton::JewelButton(QWidget *parent) :
     setStyleSheet("QPushButton:hover{background-color:rgb(255,215,0);border: 1px solid grey;border-radius:8px;}"
                   "QPushButton{background-color:rgb(252,230,202);border: 1px solid grey;border-radius:8px;}");
 }
-
+bool JewelButton::event(QEvent *e) {
+    if(!isEnabled())return QPushButton::event(e);
+    static QSound soundHover("D:\\Bejeweled00\\res\\sound_effect\\button_mouseover.wav");
+    static QSound soundLeave("D:\\Bejeweled00\\res\\sound_effect\\button_mouseleave.wav");
+    static QSound soundPress("D:\\Bejeweled00\\res\\sound_effect\\button_press.wav");
+    static QSound soundRelease("D:\\Bejeweled00\\res\\sound_effect\\button_release.wav");
+    switch(e->type()){
+        case QEvent::Enter:
+                soundHover.play();
+            break;
+        case QEvent::Leave:
+                soundLeave.play();
+            break;
+        case QEvent::MouseButtonPress:
+                soundPress.play();
+            break;
+        case QEvent::MouseButtonRelease:
+                soundRelease.play();
+            break;
+        default:
+            break;
+    }
+    return QPushButton::event(e);
+}
 void JewelButton::paintEvent(QPaintEvent* event)
 {
 	static const QIcon red (QPixmap("D:/Bejeweled00/res/red.png"));
@@ -43,4 +69,5 @@ void JewelButton::paintEvent(QPaintEvent* event)
 		setIcon(blue);
 		break;
 	}
+
 }

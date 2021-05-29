@@ -76,7 +76,7 @@ list<BoardEvent> Game::Swap(JewelPos pos, Bejeweled::SwapDirection direction)
 		modeLogic->FinishedOneMove();
         scoreSystem->finishMove();
 	}
-    emit(Hint(board->getPossibleSwap()));//
+    emit(Hint(board->getPossibleSwap()));
 
 	return events;
 }

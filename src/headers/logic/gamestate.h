@@ -64,8 +64,6 @@ public:
 	list<BoardEvent> Swap(JewelPos, Bejeweled::SwapDirection direction);
 
 	// copy inhibited
-	GameState(const GameState&) = delete;
-	GameState& operator=(const GameState&) = delete;
 	State state() const;
 
 signals:

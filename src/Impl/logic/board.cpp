@@ -108,7 +108,6 @@ void Board::seedToArray(){
     for(int i=0;i<1000000;i++){
        arr[i]=rand()%5+1;
     }
-
 }
 /**
  *³õÊ¼»¯ÆåÅÌ
