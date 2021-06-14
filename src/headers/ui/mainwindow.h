@@ -12,6 +12,10 @@
 #include "selectpage.h"
 #include "roompage.h"
 #include "scorepage.h"
+#include "setpage.h"
+#include "JoinRoompage.h"
+#include "Regiserpage.h"
+#include "aboutpage.h"
 #include <QPropertyAnimation>
 namespace Bejeweled {
 	class GameState;
@@ -36,9 +40,15 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+
+public:signals:
+    void onSwap2Signal(int x,int y,Bejeweled::SwapDirection direction);
 //!槽函数
 private slots:
-    //!点击事件
+    //!按钮点击事件
+    void aboutClicked();
+    void returnClicked();
 	void startClicked();
 	void scoreClicked();
 	void goClicked();
@@ -47,6 +57,17 @@ private slots:
     void hintClicked();
     void doubleClicked();
     void joinClicked();
+    void joinroom();
+    void registerDB();
+    void loginDB();
+
+    void settingClicked();
+    void updateIP();
+    void changeMusicVolume(int);
+    void changeSoundVolume(int);
+    void changeMusic();
+    void changeSoundEffect();
+    void changeSoundEffect2();
    //!点击事件
 
    //!交换事件
@@ -64,7 +85,6 @@ private:
 
 
 	// Three StartXXX functions affects only GUI
-
 	void startSelect();
 	void startGame();
     void startGame2(int );
@@ -91,14 +111,19 @@ private:
     Selectpage*selectpage;
     Roompage*roompage;
     Scorepage*scorepage;
+    Setpage*setpage;
+    JoinRoompage *joinRoompage;
+    Aboutpage*aboutPage;
+    Registerpage *registerpage;
 	QLabel *scoreDisplay;
     QLabel *scoreDisplay2;
     QLabel *deathLabel;
+    QLabel*pauseLabel;
+    QPropertyAnimation*pauseAnimation;
+    QPropertyAnimation*pauseAnimation2;
 	QProgressBar* progressBar;
 	QPushButton *pauseButton;
 	QPushButton *hintButton;
-
-
     QLabel*excellentLabel;
     QPropertyAnimation *excellentAnimation;
     QLabel*awesomeLabel;
@@ -116,16 +141,11 @@ private:
     QPropertyAnimation*goodAnimation2;
     QLabel*unbelievableLabel2;
     QPropertyAnimation*unbelievableAnimation2;
-
-
     Ui::MainWindow *ui;
     //!UI组件
-    //!gif
-    QMovie*movie1;
-    QMovie*movie2;
-    QMovie*movie3;
-    QMovie*movie4;
-    //!gif
+
+
+
     //!Music
     bool sound_effect2;
     bool sound_effect1;
@@ -146,13 +166,14 @@ private:
     QMediaPlayer*badMove;
     QMediaPlayer*tick;
     QMediaPlayer*hit;
+    QMediaPlayer*back;
     QMediaPlaylist *bgMusicList;
      QMediaPlayer*bgplayer;
      QMediaPlayer*gameBgPlayer;
      //!Music
     //!网络
     QTcpServer *server;
-    QTcpSocket* socket;
+    QTcpSocket *socket;
     //!成员
 	GameState *gameState;
 	pair<Color,Jewel*> map_[Board::kLargeSize][Board::kLargeSize];//二维数组数据结构,对应位置的宝石颜色与宝石对象
@@ -164,9 +185,9 @@ private:
     bool uiDrawing; // swap lock,当绘制UI时不能进行Hint,swap,pause操作
     bool animationDrawing; // internal drawing lock,某个动画绘制时其他动画不能绘制
     static const int kJewelWidgetSize = 50;//宝石size
+    //!双人模式
     int combo1;
     int combo2;
-    //todo 双人模式
     pair<Color,Jewel*> map2_[Board::kLargeSize][Board::kLargeSize];
     GameState *gameState2;
     bool animationDrawing2;
@@ -175,16 +196,17 @@ private:
     int port;
     string startSignal;
     QString IP;
+
     void serverNewConnect();
     void joinRoom(int);
     void socketReadData();
     void socketDisconnected();
     void processReadStr(string s);
-  static string processStrToSend(JewelPos pos, SwapDirection direction);
+    static string processStrToSend(JewelPos pos, SwapDirection direction);
     void roomPage();
     void registerClicked();
-    void loginClicked();
-    void returnClicked();
+
+
 };
 
 #endif // MAINWINDOW_H

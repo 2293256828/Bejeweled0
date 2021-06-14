@@ -11,7 +11,7 @@ Selectpage::Selectpage(QWidget *parent) :
         QFrame(parent) {
     QPalette palette;  //创建一个调色板的对象
     QPixmap pixmap;
-    pixmap.load("D:/Bejeweled00/res/img.png");
+    pixmap.load("D:/Bejeweled00/res/pictures/img.png");
     palette.setBrush(backgroundRole(), QBrush(pixmap));
     setPalette(palette);
     this->update();

@@ -16,6 +16,8 @@ public:
     JewelButton *start_button;
     JewelButton*score_button ;
     JewelButton*join_button;
+    JewelButton*setting_button;
+    JewelButton*about_button;
 };
 
 

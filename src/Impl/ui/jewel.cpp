@@ -22,12 +22,12 @@ Jewel::Jewel(Bejeweled::Color color, QWidget *parent) :
  * @param event
  */
 void Jewel::paintEvent(QPaintEvent *event) {
-    static const QPixmap redPix("D:/Bejeweled00/res/red.png");
-    static const QPixmap orangePix("D:/Bejeweled00/res/orange.png");
-    static const QPixmap yellowPix("D:/Bejeweled00/res/yellow.png");
-    static const QPixmap greenPix("D:/Bejeweled00/res/green.png");
-    static const QPixmap bluePix("D:/Bejeweled00/res/blue.png");
-    static const QPixmap transPix("D:/Bejeweled00/res/trans2.png");
+    static const QPixmap redPix("D:/Bejeweled00/res/pictures/red.png");
+    static const QPixmap orangePix("D:/Bejeweled00/res/pictures/orange.png");
+    static const QPixmap yellowPix("D:/Bejeweled00/res/pictures/yellow.png");
+    static const QPixmap greenPix("D:/Bejeweled00/res/pictures/green.png");
+    static const QPixmap bluePix("D:/Bejeweled00/res/pictures/blue.png");
+    static const QPixmap transPix("D:/Bejeweled00/res/pictures/trans2.png");
     QPainter painter(this);
     QPixmap const *pixmap;
     //FIXME paint pixmap according to color
