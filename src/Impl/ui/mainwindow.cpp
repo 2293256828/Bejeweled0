@@ -96,7 +96,7 @@ MainWindow::MainWindow(QWidget *parent):
     hit->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\gem_hit.wav"));
     back->setMedia(QUrl::fromLocalFile("D:\\Bejeweled00\\res\\sound_effect\\voice_welcomeback.wav"));
     registerClicked();
-//    startHome();
+    bgMusicList->setCurrentIndex(0);
 }
 
 MainWindow::~MainWindow() {
@@ -106,13 +106,11 @@ MainWindow::~MainWindow() {
     }
     delete ui;
 }
-//todo combo动画 消除动画  music soundEffect double
 /**
  * home页 todo 登陆注册
  */
 void MainWindow::startHome() {
-    back->play();
-    bgMusicList->setCurrentIndex(1);
+
     if (bgMusic) bgplayer->play();
     homepage = new Homepage(this);
     QPalette palette;  //创建一个调色板的对象
@@ -269,6 +267,7 @@ void MainWindow::loginDB()
         registerpage->setLineEdit();
     }else{
         gameState->setID(registerpage->getID());
+        back->play();
         startHome();
     }
 }
@@ -402,7 +401,6 @@ void MainWindow::joinroom()
         msg.exec();
     }
 }
-//todo 传入随机端口号作为房间号,
 void MainWindow::roomPage() {
     createRoom();//创建监听服务
     roompage = new Roompage(this, port);
@@ -415,16 +413,15 @@ void MainWindow::roomPage() {
     roompage->show();
     QObject::connect(roompage->double_go_button, SIGNAL(clicked()), this, SLOT(doubleClicked()));
 }
-
 /**
  *
  */
 void MainWindow::exitClicked() {
     gameState->Exit();
+    gameBgPlayer->stop();//todo
     // Set up initial frame
     startHome();
 }
-
 void MainWindow::pauseClicked() {
     if (gameState->state() == GameState::PAUSE) {
 
@@ -448,9 +445,8 @@ void MainWindow::pauseClicked() {
 
     }
 }
-
 void MainWindow::updateTimeDisplay(int remain) {
-    if (gameState->getSettings()->mode == TIME_LIMIT || TIME_LIMIT_DOUBLE) {
+    if (gameState->getSettings()->mode == TIME_LIMIT || gameState->getSettings()->mode == TIME_LIMIT_DOUBLE) {
         if (remain <= 90)
             progressBar->setStyleSheet(
                     "QProgressBar{color:blue;} ");
@@ -464,9 +460,10 @@ void MainWindow::updateTimeDisplay(int remain) {
         update();
     } else {
        progressBar->setValue((4-remain)/0.04);
+       if(remain==0)progressBar->setValue(100);
+        update();
     }
 }
-
 /**
  *slot  交换
  * @param direction
@@ -497,8 +494,9 @@ void MainWindow::onSwap(SwapDirection direction) {
         drawBoardEvent(event);//
     }
     if (!swaped) {
-        swapJewelInMap(x, y, direction);//如果此次交换无效,那么再换回来
         if (sound_effect1)badMove->play();
+        swapJewelInMap(x, y, direction);//如果此次交换无效,那么再换回来
+
         update();
     }
     gameState->Resume();
@@ -506,7 +504,6 @@ void MainWindow::onSwap(SwapDirection direction) {
     hintButton->setEnabled(true);
     uiDrawing = false;
 }
-
 void MainWindow::onSwap2(int x, int y, SwapDirection direction) {
     JewelPos pos(x, y);//获得发送信号的宝石所在的位置
     //swap first
@@ -524,7 +521,6 @@ void MainWindow::onSwap2(int x, int y, SwapDirection direction) {
         update();
     }
 }
-
 void MainWindow::gameEnd(bool highScore) {
     string end;//end 结束进行的通知代号
     if (bgMusic)bgplayer->play();
@@ -564,7 +560,6 @@ void MainWindow::gameEnd(bool highScore) {
         }
     }
 }
-
 /**
  * 处理收到的数据
  * @param s
@@ -658,11 +653,8 @@ void MainWindow::processReadStr(string s) {
                     return;
             }
     }
-//    QtConcurrent::run(thisonSwap2,x,y,direction);
-//    onSwap2(x,y,direction);
      emit(onSwap2Signal(x,y,direction));
 };
-
 /**
  * 事件的动画表示
  * @param event
@@ -675,7 +667,7 @@ void MainWindow::drawBoardEvent(const BoardEvent &event) {
                 map_[info.first.x][info.first.y].first = static_cast<Bejeweled::Color>(info.second);
                 map_[info.first.x][info.first.y].second->SetColor(static_cast<Bejeweled::Color>(info.second));
                 auto *animation = new QPropertyAnimation(widget, "geometry");
-                animation->setDuration(200); // smaller than wait time
+                animation->setDuration(150); // todo
                 animation->setStartValue(QRect(widget->x(), widget->y(), 1, 1));
                 animation->setEndValue(QRect(widget->x(), widget->y(), 50, 50)); // normal size
                 animation->start();
@@ -840,7 +832,6 @@ void MainWindow::drawBoardEvent(const BoardEvent &event) {
 
     update();
 }
-
 void MainWindow::drawBoardEvent2(const BoardEvent &event) {
     switch (event.type) {
         case BoardEvent::NEW: {
@@ -1010,7 +1001,6 @@ void MainWindow::drawBoardEvent2(const BoardEvent &event) {
     }
     update();
 }
-
 /**
  * 最上层的入口
  */
@@ -1154,13 +1144,11 @@ void MainWindow::startGame() {
     if (sound_effect1)goSound->play();
 
 }
-
 /**
  * 双人模式入口
  */
 void MainWindow::startGame2(int seed) {
-    // Set new UI frame
-    // change
+
     connect(this, SIGNAL(onSwap2Signal(int ,int ,Bejeweled::SwapDirection)),this,SLOT(onSwap2(int ,int ,Bejeweled::SwapDirection)));
     bgplayer->stop();
     if (gameBgMusic)gameBgPlayer->play();
@@ -1400,7 +1388,6 @@ void MainWindow::createRoom() {
     QMessageBox::information(this, "SUCCESS", "PORT HAVE OPENED ON :" + QString::number(port));
     connect(server, &QTcpServer::newConnection, this, &MainWindow::serverNewConnect);
 }
-
 void MainWindow::joinRoom(int roomNumber) {
     socket = new QTcpSocket();
     QObject::connect(socket, &QTcpSocket::readyRead, this, &MainWindow::socketReadData);
@@ -1415,7 +1402,6 @@ void MainWindow::joinRoom(int roomNumber) {
     }
 
 }
-
 /**
  * 读取传输的数据
  */
@@ -1424,7 +1410,6 @@ void MainWindow::socketReadData() {
         string s = tr(buffer).toStdString();
         processReadStr(s);
 }
-
 /**
  * 处理将要发送的数据
  */
@@ -1451,12 +1436,10 @@ string MainWindow::processStrToSend(JewelPos pos, SwapDirection direction) {
     }
     return str;
 }
-
 void MainWindow::socketDisconnected() {
     QMessageBox::warning(this, "HINT", "The other man has disconnected!");
     readyDouble = false;
 }
-
 /**
  * 被连接
  */
