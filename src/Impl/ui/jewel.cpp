@@ -30,7 +30,7 @@ void Jewel::paintEvent(QPaintEvent *event) {
     static const QPixmap transPix("D:/Bejeweled00/res/pictures/trans2.png");
     QPainter painter(this);
     QPixmap const *pixmap;
-    //FIXME paint pixmap according to color
+
     switch (color) {
         case Bejeweled::Color::RED:
             pixmap = &redPix;

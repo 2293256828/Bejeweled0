@@ -107,6 +107,555 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 /**
+ * 双人模式入口
+ */
+void MainWindow::startGame2(int seed) {
+
+    connect(this, SIGNAL(onSwap2Signal(int ,int ,Bejeweled::SwapDirection)),this,SLOT(onSwap2(int ,int ,Bejeweled::SwapDirection)));
+    bgplayer->stop();
+    if (gameBgMusic)gameBgPlayer->play();
+    death2 = false;
+    death1 = false;
+    currentFrame = new QFrame(this);
+    excellentLabel = new QLabel(currentFrame);
+    goodLabel = new QLabel(currentFrame);
+    unbelievableLabel = new QLabel(currentFrame);
+    awesomeLabel = new QLabel(currentFrame);
+    excellentLabel->resize(206, 150);
+    goodLabel->resize(216, 192);
+    unbelievableLabel->resize(231, 248);
+    awesomeLabel->resize(216, 193);
+    goodLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\goodjob.png"));
+    excellentLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\EXCELLENT.png"));
+    awesomeLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\awesome.png"));
+    unbelievableLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\unbelievable.png"));
+    excellentLabel->move(540, 260);
+    awesomeLabel->move(540, 260);
+    goodLabel->move(540, 260);
+    unbelievableLabel->move(540, 260);
+    unbelievableLabel->hide();
+    awesomeLabel->hide();
+    goodLabel->hide();
+    excellentLabel->hide();
+    goodAnimation = new QPropertyAnimation(goodLabel, "geometry");
+    goodAnimation->setEasingCurve(QEasingCurve::InOutCubic);
+    goodAnimation->setDuration(1000);
+    goodAnimation->setStartValue(QRect(goodLabel->x() - 216, goodLabel->y(), 1, 1));
+    goodAnimation->setEndValue(QRect(goodLabel->x(), goodLabel->y(), 216, 192));
+
+    awesomeAnimation = new QPropertyAnimation(awesomeLabel, "geometry");
+    awesomeAnimation->setEasingCurve(QEasingCurve::InOutCubic);
+    awesomeAnimation->setDuration(1200);
+    awesomeAnimation->setStartValue(QRect(awesomeLabel->x() - 216, awesomeLabel->y(), 1, 1));
+    awesomeAnimation->setEndValue(QRect(awesomeLabel->x(), awesomeLabel->y(), 216, 193));
+
+    unbelievableAnimation = new QPropertyAnimation(unbelievableLabel, "geometry");
+    unbelievableAnimation->setEasingCurve(QEasingCurve::InOutCubic);
+    unbelievableAnimation->setDuration(1600);
+    unbelievableAnimation->setStartValue(QRect(unbelievableLabel->x() - 231, unbelievableLabel->y(), 1, 1));
+    unbelievableAnimation->setEndValue(QRect(unbelievableLabel->x(), unbelievableLabel->y(), 231, 248));
+
+
+    excellentAnimation = new QPropertyAnimation(excellentLabel, "geometry");
+    excellentAnimation->setEasingCurve(QEasingCurve::InOutCubic);
+    excellentAnimation->setDuration(1400);
+    excellentAnimation->setStartValue(QRect(excellentLabel->x() - 206, excellentLabel->y(), 1, 1));
+    excellentAnimation->setEndValue(QRect(excellentLabel->x(), excellentLabel->y(), 206, 150)); // normal size
+
+
+    excellentLabel2 = new QLabel(currentFrame);
+    goodLabel2 = new QLabel(currentFrame);
+    unbelievableLabel2 = new QLabel(currentFrame);
+    awesomeLabel2 = new QLabel(currentFrame);
+    excellentLabel2->resize(206, 150);
+    goodLabel2->resize(216, 192);
+    unbelievableLabel2->resize(231, 248);
+    awesomeLabel2->resize(216, 193);
+    goodLabel2->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\goodjob2.png"));
+    excellentLabel2->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\EXCELLENT2.png"));
+    awesomeLabel2->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\awesome2.png"));
+    unbelievableLabel2->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\unbelievable2.png"));
+    excellentLabel2->move(600, 260);
+    awesomeLabel2->move(600, 260);
+    goodLabel2->move(600, 260);
+    unbelievableLabel2->move(600, 260);
+    unbelievableLabel2->hide();
+    awesomeLabel2->hide();
+    goodLabel2->hide();
+    excellentLabel2->hide();
+    goodAnimation2 = new QPropertyAnimation(goodLabel2, "geometry");
+    goodAnimation2->setEasingCurve(QEasingCurve::InOutCubic);
+    goodAnimation2->setDuration(1000);
+    goodAnimation2->setStartValue(QRect(goodLabel2->x() + 216, goodLabel2->y(), 1, 1));
+    goodAnimation2->setEndValue(QRect(goodLabel2->x(), goodLabel2->y(), 216, 192));
+
+    awesomeAnimation2 = new QPropertyAnimation(awesomeLabel2, "geometry");
+    awesomeAnimation2->setEasingCurve(QEasingCurve::InOutCubic);
+    awesomeAnimation2->setDuration(1200);
+    awesomeAnimation2->setStartValue(QRect(awesomeLabel2->x() + 216, awesomeLabel2->y(), 1, 1));
+    awesomeAnimation2->setEndValue(QRect(awesomeLabel2->x(), awesomeLabel2->y(), 216, 193));
+
+    unbelievableAnimation2 = new QPropertyAnimation(unbelievableLabel2, "geometry");
+    unbelievableAnimation2->setEasingCurve(QEasingCurve::InOutCubic);
+    unbelievableAnimation2->setDuration(1600);
+    unbelievableAnimation2->setStartValue(QRect(unbelievableLabel2->x() + 231, unbelievableLabel2->y(), 1, 1));
+    unbelievableAnimation2->setEndValue(QRect(unbelievableLabel2->x(), unbelievableLabel2->y(), 231, 248));
+
+    excellentAnimation2 = new QPropertyAnimation(excellentLabel2, "geometry");
+    excellentAnimation2->setEasingCurve(QEasingCurve::InOutCubic);
+    excellentAnimation2->setDuration(1400);
+    excellentAnimation2->setStartValue(QRect(excellentLabel2->x() + 206, excellentLabel2->y(), 1, 1));
+    excellentAnimation2->setEndValue(QRect(excellentLabel2->x(), excellentLabel2->y(), 206, 150)); // normal size
+
+    QPalette palette;  //创建一个调色板的对象
+    QPixmap pixmap;
+    pixmap.load("D:/Bejeweled00/res/pictures/img.png");
+    palette.setBrush(backgroundRole(), QBrush(pixmap));
+    setPalette(palette);
+    pauseButton = new JewelButton();
+    deathLabel = new QLabel("DEATH", currentFrame);
+    deathLabel->setPalette(Qt::red);
+    deathLabel->hide();
+    setCentralWidget(currentFrame);
+    auto *under_frame = new QFrame(currentFrame);
+    auto *under_layout = new QGridLayout(under_frame);
+    auto *board = new QLabel(currentFrame);
+    auto *P1 = new QLabel(currentFrame);
+    P1->setPixmap(QPixmap("D:/Bejeweled00/res/pictures/P1.png"));
+    P1->move(0, 650);
+    auto *P2 = new QLabel(currentFrame);
+    P2->setPixmap(QPixmap("D:/Bejeweled00/res/pictures/P2.png"));
+    P2->move(1240, 650);
+    board->setPixmap(QPixmap("D:/Bejeweled00/res/pictures/img.png"));
+    board->setMinimumHeight(kJewelWidgetSize * (boardSize));
+    board->setMinimumWidth(kJewelWidgetSize * (boardSize));
+    board->setMaximumHeight(kJewelWidgetSize * (boardSize));
+    board->setMaximumWidth(kJewelWidgetSize * (boardSize));
+    auto *board2 = new QLabel(currentFrame);
+    board2->setMinimumHeight(kJewelWidgetSize * (boardSize));
+    board2->setMinimumWidth(kJewelWidgetSize * (boardSize));
+    board2->setMaximumHeight(kJewelWidgetSize * (boardSize));
+    board2->setMaximumWidth(kJewelWidgetSize * (boardSize));
+    board2->setPixmap(QPixmap("D:/Bejeweled00/res/pictures/img.png"));
+    QPalette blue_pa;
+    blue_pa.setColor(QPalette::WindowText, Qt::blue);
+    QPalette RED_pa;
+    RED_pa.setColor(QPalette::WindowText, Qt::red);
+    scoreDisplay2 = new QLabel(currentFrame);
+    scoreDisplay2->setFont(QFont("Microsoft YaHei", 15, 150));
+    scoreDisplay2->setPalette(RED_pa);
+    auto *label1 = new QLabel(tr("SCORE"), currentFrame);
+    auto *label2 = new QLabel(tr("SCORE"), currentFrame);
+    label1->setFont(QFont("Microsoft YaHei", 15, 150));
+    label1->setPalette(blue_pa);
+    label2->setFont(QFont("Microsoft YaHei", 15, 150));
+    label2->setPalette(RED_pa);
+    scoreDisplay = new QLabel(currentFrame);
+    scoreDisplay->resize(200, 100);
+    scoreDisplay->setFont(QFont("Microsoft YaHei", 15, 150));
+    scoreDisplay->setPalette(blue_pa);
+    auto *timeUsedLabel = new QLabel(tr("YOUR TIMEBAR"), currentFrame);
+    timeUsedLabel->setFont(QFont("Microsoft YaHei", 15, 150));
+    auto *exitButton = new JewelButton(under_frame);
+    exitButton->setText(tr("Exit"));
+    connect(exitButton, SIGNAL(clicked()), this, SLOT(exitClicked()));
+    resize(1400, 500);
+    //! /!初始化每个宝石的位置并赋予每个宝石发射信号的能力
+    for (int i = 0; i != boardSize; ++i)
+        for (int j = 0; j != boardSize; ++j) {
+            map_[i][j].second = new Jewel(Color::NONE, board);
+            map_[i][j].second->setGeometry(kJewelWidgetSize * j, kJewelWidgetSize * i, kJewelWidgetSize,
+                                           kJewelWidgetSize);
+            connect(map_[i][j].second, SIGNAL(Swap(Bejeweled::SwapDirection)), this, SLOT(
+                    onSwap(Bejeweled::SwapDirection)));
+            map2_[i][j].second = new Jewel(Color::NONE, board2);
+            map2_[i][j].second->setGeometry(kJewelWidgetSize * j, kJewelWidgetSize * i, kJewelWidgetSize,
+                                            kJewelWidgetSize);//P2不需发射信号
+        }
+    move(400, 100);
+    hintButton = new JewelButton(under_frame);
+    hintButton->setText(tr("Hint"));
+    connect(hintButton, SIGNAL(clicked()), this, SLOT(hintClicked()));
+    progressBar = new QProgressBar(this);
+    int len = this->width() / 100 * 6;
+    progressBar->setGeometry(this->width() / 20 * 7 + 20, this->height() - len, 10 * len - 40, len * 7 / 10 + 30);
+    progressBar->setRange(0, 99);
+    progressBar->setValue(0);
+    progressBar->setFormat("%p%");
+    progressBar->setAlignment(Qt::AlignCenter);
+    progressBar->setFont(QFont("Microsoft YaHei", 12, 100));
+
+    timeUsedLabel->resize(200, 100);
+    timeUsedLabel->move(580, 570);
+    under_layout->addWidget(new QLabel("", under_frame), 2, 0);
+    under_layout->addWidget(progressBar, 3, 0);
+    under_layout->addWidget(hintButton, 4, 0);
+    under_layout->addWidget(exitButton, 5, 0);
+    label1->move(590, 50);
+    label2->move(700, 50);
+    scoreDisplay->move(632, 100);
+    scoreDisplay->setAlignment(Qt::AlignRight);
+    auto *VS = new QLabel(currentFrame);
+    VS->setPixmap(QPixmap("D:/Bejeweled00/res/pictures/vs2.png"));
+    VS->move(530, 380);
+    scoreDisplay2->move(710, 65);
+    scoreDisplay2->resize(200, 100);
+    scoreDisplay->setAlignment(Qt::AlignLeft);
+    combo1Label = new QLabel("COMBO", currentFrame);
+    combo2Label = new QLabel("COMBO", currentFrame);
+    combo1Label->setPalette(bluePa);
+    combo2Label->setPalette(redPa);
+    combo1Label->setFont(QFont("Microsoft YaHei", 15, 150));
+    combo2Label->setFont(QFont("Microsoft YaHei", 15, 150));
+    combo1Display = new QLabel("", currentFrame);
+    combo2Display = new QLabel("", currentFrame);
+    combo1Display->setFont(QFont("Microsoft YaHei", 15, 150));
+    combo2Display->setFont(QFont("Microsoft YaHei", 15, 150));
+    combo1Label->move(590, 130);
+    combo1Display->move(610, 180);
+    combo1Display->resize(20, 20);
+    combo2Label->move(700, 130);
+    combo2Display->move(720, 180);
+    combo2Display->resize(20, 20);
+    board->move(10, 50);
+    board2->move(900, 50);
+    under_frame->move(200, 500);
+    under_frame->resize(1000, 300);
+    currentFrame->show();
+    drawBoardEvent(gameState->StartNewGame(seed));
+    drawBoardEvent2(gameState2->StartNewGame(seed));
+//!连接信号和槽
+    connect(gameState, SIGNAL(Hint(Bejeweled::JewelPos)), this, SLOT(updateHint(Bejeweled::JewelPos)));
+    //game emit->gameState->mainWindow , purpose:更新可行的宝石位置updateHint()
+    connect(gameState, SIGNAL(timeTick(int)), this, SLOT(updateTimeDisplay(int)));
+    //gameState->mainWindow , purpose:更新计时器QLabel updateTimeDisplay()
+    connect(gameState, SIGNAL(scoreUpdated(int)), this, SLOT(updateScore(int)));
+    //gameState->mainWindow, purpose:更新成绩QLabel updateScore()
+    connect(gameState2, SIGNAL(scoreUpdated(int)), this, SLOT(updateScore2(int)));
+//!连接信号和槽
+    if (sound_effect1)goSound->play();
+}
+//!网络Qt通信
+/**创建房间
+ *
+ */
+void MainWindow::createRoom() {
+    server = new QTcpServer();
+    port = rand() % 64511 + 1024;//todo:random
+    while (!server->listen(QHostAddress::Any, port)) {//监听开始
+        qDebug() << server->errorString();
+        QMessageBox::warning(this, "DEFEAT", "OCCUPIED PORT:" + QString::number(port) + "\nFINDING ANOTHER...");
+        port = rand() % 64511 + 1024;
+    };
+    QMessageBox::information(this, "SUCCESS", "PORT HAVE OPENED ON :" + QString::number(port));
+    connect(server, &QTcpServer::newConnection, this, &MainWindow::serverNewConnect);
+}
+void MainWindow::joinRoom(int roomNumber) {
+    socket = new QTcpSocket();
+    QObject::connect(socket, &QTcpSocket::readyRead, this, &MainWindow::socketReadData);
+    QObject::connect(socket, &QTcpSocket::disconnected, this, &MainWindow::socketDisconnected);
+    port = roomNumber;
+    socket->abort();
+    socket->connectToHost(IP, port);
+    if (!socket->waitForConnected(3000)) { QMessageBox::warning(this, "DEFEAT", "JOIN DEFEAT!"); }
+    else {
+        QMessageBox::information(this, "SUCCESS", "JOIN SUCCESS!");
+        readyDouble = true;
+    }
+
+}
+/**
+ * 读取传输的数据
+ */
+void MainWindow::socketReadData() {
+    QByteArray  buffer = socket->readAll();
+    string s = tr(buffer).toStdString();
+    processReadStr(s);
+}
+/**
+ * 处理将要发送的数据
+ */
+string MainWindow::processStrToSend(JewelPos pos, SwapDirection direction) {
+    int x = pos.x, y = pos.y;
+    string str;
+    if (x >= 10)str += to_string(x);
+    else str += "0" + to_string(x);
+    if (y >= 10)str += to_string(y);
+    else str += "0" + to_string(y);
+    switch (direction) {
+        case UP:
+            str += to_string(3);
+            break;
+        case RIGHT:
+            str += to_string(2);
+            break;
+        case DOWN:
+            str += to_string(4);
+            break;
+        case LEFT:
+            str += to_string(1);
+            break;
+    }
+    return str;
+}
+void MainWindow::socketDisconnected() {
+    QMessageBox::warning(this, "HINT", "The other man has disconnected!");
+    readyDouble = false;
+}
+/**
+ * 被连接
+ */
+void MainWindow::serverNewConnect() {
+    QMessageBox::warning(this, "HINT", "READY!");
+    readyDouble = true;
+    socket = server->nextPendingConnection();
+    QObject::connect(socket, &QTcpSocket::readyRead, this, &MainWindow::socketReadData);
+}
+/**
+ * 加入房间
+ */
+/**
+ * slot
+ * @param newScore
+ */
+void MainWindow::updateScore(int newScore) {
+    scoreDisplay->setText(QString::number(newScore));
+    update();
+}
+/**
+ *slot  交换
+ * @param direction
+ */
+void MainWindow::onSwap(SwapDirection direction) {
+    if (uiDrawing || gameState->state() != GameState::INGAME)
+        return;
+    if (sound_effect1)tick->play();
+    gameState->Pause();
+    pauseButton->setEnabled(false);
+    hintButton->setEnabled(false);
+
+    auto *sender = (Jewel *) this->sender();
+    int x = sender->geometry().y() / 50;
+    int y = sender->geometry().x() / 50;
+    JewelPos pos(x, y);
+    uiDrawing = true;
+    //swap first
+
+    if (!swapJewelInMap(x, y, direction)) { return; }
+    string str = processStrToSend(pos, direction);
+    if (readyDouble) socket->write(str.data());
+    auto events = gameState->Swap(pos, direction);//gameState->Swap
+
+    bool swaped = false;
+    for (const BoardEvent &event : events) {
+        swaped = true;
+        drawBoardEvent(event);//
+    }
+    if (!swaped) {
+        if (sound_effect1)badMove->play();
+        swapJewelInMap(x, y, direction);//如果此次交换无效,那么再换回来
+
+        update();
+    }
+    gameState->Resume();
+    pauseButton->setEnabled(true);
+    hintButton->setEnabled(true);
+    uiDrawing = false;
+}
+void MainWindow::updateScore2(int newScore) {
+    scoreDisplay2->setText(QString::number(newScore));
+    update();
+}
+
+/**
+ *数据结构上交换宝石
+ * @param x 宝石的横坐标
+ * @param y  纵坐标
+ * @param direction 交换方向
+ * @return  TRUE if success
+ */
+bool MainWindow::swapJewelInMap(int x, int y, SwapDirection direction) {
+    // TODO animate it
+    switch (direction) {
+        case DOWN: {
+            if (x >= boardSize - 1)
+                return false;
+            const QRect tmp = map_[x][y].second->geometry();
+            const QRect tmp2 = map_[x + 1][y].second->geometry();
+            auto *animation2 = new QPropertyAnimation(map_[x + 1][y].second, "geometry",
+                                                      this);
+            animationDrawing = true;
+            auto *animation = new QPropertyAnimation(map_[x][y].second, "geometry", this);
+            animation->setDuration(300);
+            animation->setStartValue(tmp);
+            animation->setEndValue(QRect(tmp2));
+            animation->setEasingCurve(QEasingCurve::InQuad);
+            animation->start();
+            QTimer::singleShot(400, this, [=]() {
+                delete animation;
+            });
+            animation2->setDuration(300);
+            animation2->setStartValue(tmp2);//新位置的
+            animation2->setEndValue(QRect(tmp));
+            animation2->setEasingCurve(QEasingCurve::InQuad);
+            animation2->start();
+            QTimer::singleShot(400, this, [=]() {
+                delete animation2;
+            });
+            QTimer timer;
+            timer.setInterval(800);
+            timer.setSingleShot(true);
+            timer.start();
+            connect(&timer, &QTimer::timeout, [=]() {
+                animationDrawing = false;
+            });
+            while (animationDrawing)
+                QApplication::processEvents(QEventLoop::AllEvents);
+            Color tmpColor = map_[x + 1][y].first;
+            map_[x + 1][y].first = map_[x][y].first;
+            Jewel *temp = map_[x][y].second;//temp=first;
+            map_[x][y].second = map_[x + 1][y].second;//first=second
+            map_[x + 1][y].second = temp;//second=temp
+            map_[x][y].first = tmpColor;
+            break;
+        }
+        case UP: {
+            if (x <= 0)
+                return false;
+            const QRect tmp = map_[x][y].second->geometry();
+            const QRect tmp2 = map_[x - 1][y].second->geometry();
+            auto *animation2 = new QPropertyAnimation(map_[x - 1][y].second, "geometry",
+                                                      this);
+            animationDrawing = true;
+            animation2->setDuration(300);
+            animation2->setStartValue(tmp2);//新位置的
+            animation2->setEndValue(QRect(tmp));
+            animation2->setEasingCurve(QEasingCurve::InQuad);
+            animation2->start();
+            QTimer::singleShot(400, this, [=]() {
+                delete animation2;
+            });
+            auto *animation = new QPropertyAnimation(map_[x][y].second, "geometry",
+                                                     this);
+            animation->setDuration(300);
+            animation->setStartValue(tmp);
+            animation->setEndValue(QRect(tmp2));
+            animation->setEasingCurve(QEasingCurve::InQuad);
+            animation->start();
+            QTimer::singleShot(400, this, [=]() {
+                delete animation;
+            });
+            QTimer timer;
+            timer.setInterval(800);
+            timer.setSingleShot(true);
+            timer.start();
+            connect(&timer, &QTimer::timeout, [=]() {
+                animationDrawing = false;
+            });
+            while (animationDrawing)
+                QApplication::processEvents(QEventLoop::AllEvents);
+            Color tmpColor = map_[x - 1][y].first;
+            map_[x - 1][y].first = map_[x][y].first;
+            Jewel *temp = map_[x][y].second;//temp=first;
+            map_[x][y].second = map_[x - 1][y].second;//first=second
+            map_[x - 1][y].second = temp;//second=temp
+            map_[x][y].first = tmpColor;
+            break;
+        }
+        case LEFT: {
+            if (y <= 0)
+                return false;
+            const QRect tmp = map_[x][y].second->geometry();
+            const QRect tmp2 = map_[x][y - 1].second->geometry();
+            animationDrawing = true;
+            auto *animation = new QPropertyAnimation(map_[x][y].second, "geometry", this);
+            animation->setDuration(300);
+            animation->setStartValue(tmp);
+            animation->setEndValue(QRect(tmp2));
+            animation->setEasingCurve(QEasingCurve::InQuad);
+            animation->start();
+            QTimer::singleShot(400, this, [=]() {
+                delete animation;
+            });
+            auto *animation2 = new QPropertyAnimation(map_[x][y - 1].second, "geometry", this);
+            animation2->setDuration(300);
+            animation2->setStartValue(tmp2);//新位置的
+            animation2->setEndValue(QRect(tmp));
+            animation2->setEasingCurve(QEasingCurve::InQuad);
+            animation2->start();
+            QTimer::singleShot(400, this, [=]() {
+                delete animation2;
+            });
+            QTimer timer;
+            timer.setInterval(800);
+            timer.setSingleShot(true);
+            timer.start();
+            connect(&timer, &QTimer::timeout, [=]() {
+                animationDrawing = false;
+            });
+            while (animationDrawing)
+                QApplication::processEvents(QEventLoop::AllEvents);
+            Color tmpColor = map_[x][y - 1].first;
+            map_[x][y - 1].first = map_[x][y].first;
+            Jewel *temp = map_[x][y].second;//temp=first;
+            map_[x][y].second = map_[x][y - 1].second;//first=second
+            map_[x][y - 1].second = temp;//second=temp
+            map_[x][y].first = tmpColor;
+            break;
+        }
+
+        case RIGHT: {
+            if (y >= boardSize - 1)
+                return false;
+            const QRect tmp = map_[x][y].second->geometry();
+            const QRect tmp2 = map_[x][y + 1].second->geometry();
+            auto *animation2 = new QPropertyAnimation(map_[x][y + 1].second, "geometry",
+                                                      this);
+            animationDrawing = true;
+            animation2->setDuration(300);
+            animation2->setStartValue(tmp2);//新位置的
+            animation2->setEndValue(QRect(tmp));
+            animation2->setEasingCurve(QEasingCurve::InQuad);
+            animation2->start();
+            QTimer::singleShot(400, this, [=]() {
+                delete animation2;
+            });
+
+            auto *animation = new QPropertyAnimation(map_[x][y].second, "geometry",
+                                                     this);
+            animation->setDuration(300);
+            animation->setStartValue(tmp);
+            animation->setEndValue(QRect(tmp2));
+            animation->setEasingCurve(QEasingCurve::InQuad);
+            animation->start();
+            QTimer::singleShot(400, this, [=]() {
+                delete animation;
+            });
+            QTimer timer;
+            timer.setInterval(800);
+            timer.setSingleShot(true);
+            timer.start();
+            connect(&timer, &QTimer::timeout, [=]() {
+                animationDrawing = false;
+            });
+            while (animationDrawing)
+                QApplication::processEvents(QEventLoop::AllEvents);
+            Color tmpColor = map_[x][y + 1].first;
+            map_[x][y + 1].first = map_[x][y].first;
+            Jewel *temp = map_[x][y].second;//temp=first;
+            map_[x][y].second = map_[x][y + 1].second;//first=second
+            map_[x][y + 1].second = temp;//second=temp
+            map_[x][y].first = tmpColor;
+            break;
+        }
+        default:
+            return false;
+            break;
+    }
+    update();
+    return true;
+}
+/**
  * home页 todo 登陆注册
  */
 void MainWindow::startHome() {
@@ -424,25 +973,27 @@ void MainWindow::exitClicked() {
 }
 void MainWindow::pauseClicked() {
     if (gameState->state() == GameState::PAUSE) {
-
+//游戏继续
 
         pauseLabel->show();
         pauseAnimation2->start();
-        QTimer::singleShot(2000, this, [=]() {
+
+        QTimer::singleShot(1500, this, [=]() {
             pauseLabel->hide();
             gameState->Resume();
+            board->show();
             pauseButton->setText(tr("Pause"));
             hintButton->setEnabled(true);
         });
-
-
     } else {
+        //进入暂停状态
         pauseLabel->show();
+        board->hide();
         pauseAnimation->start();
+
         hintButton->setEnabled(false);
         pauseButton->setText(tr("Resume"));
         gameState->Pause();
-
     }
 }
 void MainWindow::updateTimeDisplay(int remain) {
@@ -464,46 +1015,7 @@ void MainWindow::updateTimeDisplay(int remain) {
         update();
     }
 }
-/**
- *slot  交换
- * @param direction
- */
-void MainWindow::onSwap(SwapDirection direction) {
-    if (uiDrawing || gameState->state() != GameState::INGAME)
-        return;
-    if (sound_effect1)tick->play();
-    gameState->Pause();
-    pauseButton->setEnabled(false);
-    hintButton->setEnabled(false);
 
-    auto *sender = (Jewel *) this->sender();
-    int x = sender->geometry().y() / 50;
-    int y = sender->geometry().x() / 50;
-    JewelPos pos(x, y);
-    uiDrawing = true;
-    //swap first
-
-    if (!swapJewelInMap(x, y, direction)) { return; }
-    string str = processStrToSend(pos, direction);
-    if (readyDouble) socket->write(str.data());
-    auto events = gameState->Swap(pos, direction);//gameState->Swap
-
-    bool swaped = false;
-    for (const BoardEvent &event : events) {
-        swaped = true;
-        drawBoardEvent(event);//
-    }
-    if (!swaped) {
-        if (sound_effect1)badMove->play();
-        swapJewelInMap(x, y, direction);//如果此次交换无效,那么再换回来
-
-        update();
-    }
-    gameState->Resume();
-    pauseButton->setEnabled(true);
-    hintButton->setEnabled(true);
-    uiDrawing = false;
-}
 void MainWindow::onSwap2(int x, int y, SwapDirection direction) {
     JewelPos pos(x, y);//获得发送信号的宝石所在的位置
     //swap first
@@ -1009,8 +1521,8 @@ void MainWindow::startGame() {
     excellentLabel = new QLabel(currentFrame);
     pauseLabel=new QLabel(currentFrame);
     pauseLabel->hide();
-    pauseLabel->move(550,360);
-    pauseLabel->resize(179,115);
+    pauseLabel->move(100,100);
+    pauseLabel->resize(600,390);
     pauseLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\pause.png"));
     goodLabel = new QLabel(currentFrame);
     unbelievableLabel = new QLabel(currentFrame);
@@ -1036,10 +1548,10 @@ void MainWindow::startGame() {
     pauseAnimation->setEasingCurve(QEasingCurve::InOutCubic);
     pauseAnimation->setDuration(1500);
     pauseAnimation->setStartValue(QRect(pauseLabel->x(), pauseLabel->y(), 1, 1));
-    pauseAnimation->setEndValue(QRect(pauseLabel->x(), pauseLabel->y(), 179, 115));
+    pauseAnimation->setEndValue(QRect(pauseLabel->x(), pauseLabel->y(), 600, 385));
     pauseAnimation2->setEasingCurve(QEasingCurve::InOutCubic);
-    pauseAnimation2->setDuration(2000);
-    pauseAnimation2->setStartValue(QRect(pauseLabel->x(), pauseLabel->y(), 179, 115));
+    pauseAnimation2->setDuration(1500);
+    pauseAnimation2->setStartValue(QRect(pauseLabel->x(), pauseLabel->y(), 600, 385));
     pauseAnimation2->setEndValue(QRect(pauseLabel->x(), pauseLabel->y(), 1, 1));
     goodAnimation = new QPropertyAnimation(goodLabel, "geometry");
     goodAnimation->setEasingCurve(QEasingCurve::InOutCubic);
@@ -1070,7 +1582,7 @@ void MainWindow::startGame() {
     auto *under_frame = new QFrame(currentFrame);
     auto *layout = new QGridLayout(currentFrame);
     auto *under_layout = new QGridLayout(under_frame);
-    auto *board = new QLabel(currentFrame);
+    board = new QLabel(currentFrame);
     combo1Label = new QLabel("COMBO", currentFrame);
     combo1Display = new QLabel("", currentFrame);
     board->setPixmap(QPixmap("D:/Bejeweled00/res/pictures/img.png"));
@@ -1078,6 +1590,7 @@ void MainWindow::startGame() {
     board->setMinimumWidth(kJewelWidgetSize * (boardSize));
     board->setMaximumHeight(kJewelWidgetSize * (boardSize));
     board->setMaximumWidth(kJewelWidgetSize * (boardSize));
+
     // set up appropriate fonts and colors
     auto *scoreLable = new QLabel(tr("SCORE"), currentFrame);
     scoreLable->setFont(QFont("Microsoft YaHei", 15, 150));
@@ -1096,13 +1609,23 @@ void MainWindow::startGame() {
     progressBar->setFormat("%p%");
     progressBar->setAlignment(Qt::AlignCenter);
     progressBar->setFont(QFont("Microsoft YaHei", 12, 100));
-    progressBar->setStyleSheet("QProgressBar{border-image:url(D:\\Bejeweled00\\res\\pictures\\progressBar.jpg);}");
+
     auto *abort_button = new JewelButton(under_frame);
     abort_button->setText(tr("Exit"));
     connect(abort_button, SIGNAL(clicked()), this, SLOT(exitClicked()));
     resize(800, 500);
     move(400, 100);
+    boardOpenAnimation=new QPropertyAnimation(board,"geometry");
+    boardCloseAnimation=new QPropertyAnimation(board,"geometry");
+    boardOpenAnimation->setStartValue(QRect(board->x(),board->y(),1,1));
+    boardOpenAnimation->setEndValue(QRect(board->x(),board->y(),600,600));
+    boardOpenAnimation->setDuration(1500);
+    boardOpenAnimation->setEasingCurve(QEasingCurve::InOutCubic);
 
+    boardCloseAnimation->setStartValue(QRect(board->x(),board->y(),600,600));
+    boardCloseAnimation->setEndValue(QRect(board->x(),board->y(),1,1));
+    boardCloseAnimation->setDuration(1500);
+    boardCloseAnimation->setEasingCurve(QEasingCurve::InOutCubic);
     pauseButton = new JewelButton(under_frame);
     hintButton = new JewelButton(under_frame);
     hintButton->setText(tr("Hint"));
@@ -1144,516 +1667,7 @@ void MainWindow::startGame() {
     if (sound_effect1)goSound->play();
 
 }
-/**
- * 双人模式入口
- */
-void MainWindow::startGame2(int seed) {
 
-    connect(this, SIGNAL(onSwap2Signal(int ,int ,Bejeweled::SwapDirection)),this,SLOT(onSwap2(int ,int ,Bejeweled::SwapDirection)));
-    bgplayer->stop();
-    if (gameBgMusic)gameBgPlayer->play();
-    death2 = false;
-    death1 = false;
-    currentFrame = new QFrame(this);
-    excellentLabel = new QLabel(currentFrame);
-    goodLabel = new QLabel(currentFrame);
-    unbelievableLabel = new QLabel(currentFrame);
-    awesomeLabel = new QLabel(currentFrame);
-    excellentLabel->resize(206, 150);
-    goodLabel->resize(216, 192);
-    unbelievableLabel->resize(231, 248);
-    awesomeLabel->resize(216, 193);
-    goodLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\goodjob.png"));
-    excellentLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\EXCELLENT.png"));
-    awesomeLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\awesome.png"));
-    unbelievableLabel->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\unbelievable.png"));
-    excellentLabel->move(540, 260);
-    awesomeLabel->move(540, 260);
-    goodLabel->move(540, 260);
-    unbelievableLabel->move(540, 260);
-    unbelievableLabel->hide();
-    awesomeLabel->hide();
-    goodLabel->hide();
-    excellentLabel->hide();
-    goodAnimation = new QPropertyAnimation(goodLabel, "geometry");
-    goodAnimation->setEasingCurve(QEasingCurve::InOutCubic);
-    goodAnimation->setDuration(1000);
-    goodAnimation->setStartValue(QRect(goodLabel->x() - 216, goodLabel->y(), 1, 1));
-    goodAnimation->setEndValue(QRect(goodLabel->x(), goodLabel->y(), 216, 192));
-
-    awesomeAnimation = new QPropertyAnimation(awesomeLabel, "geometry");
-    awesomeAnimation->setEasingCurve(QEasingCurve::InOutCubic);
-    awesomeAnimation->setDuration(1200);
-    awesomeAnimation->setStartValue(QRect(awesomeLabel->x() - 216, awesomeLabel->y(), 1, 1));
-    awesomeAnimation->setEndValue(QRect(awesomeLabel->x(), awesomeLabel->y(), 216, 193));
-
-    unbelievableAnimation = new QPropertyAnimation(unbelievableLabel, "geometry");
-    unbelievableAnimation->setEasingCurve(QEasingCurve::InOutCubic);
-    unbelievableAnimation->setDuration(1600);
-    unbelievableAnimation->setStartValue(QRect(unbelievableLabel->x() - 231, unbelievableLabel->y(), 1, 1));
-    unbelievableAnimation->setEndValue(QRect(unbelievableLabel->x(), unbelievableLabel->y(), 231, 248));
-
-
-    excellentAnimation = new QPropertyAnimation(excellentLabel, "geometry");
-    excellentAnimation->setEasingCurve(QEasingCurve::InOutCubic);
-    excellentAnimation->setDuration(1400);
-    excellentAnimation->setStartValue(QRect(excellentLabel->x() - 206, excellentLabel->y(), 1, 1));
-    excellentAnimation->setEndValue(QRect(excellentLabel->x(), excellentLabel->y(), 206, 150)); // normal size
-
-
-    excellentLabel2 = new QLabel(currentFrame);
-    goodLabel2 = new QLabel(currentFrame);
-    unbelievableLabel2 = new QLabel(currentFrame);
-    awesomeLabel2 = new QLabel(currentFrame);
-    excellentLabel2->resize(206, 150);
-    goodLabel2->resize(216, 192);
-    unbelievableLabel2->resize(231, 248);
-    awesomeLabel2->resize(216, 193);
-    goodLabel2->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\goodjob2.png"));
-    excellentLabel2->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\EXCELLENT2.png"));
-    awesomeLabel2->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\awesome2.png"));
-    unbelievableLabel2->setPixmap(QPixmap("D:\\Bejeweled00\\res\\pictures\\unbelievable2.png"));
-    excellentLabel2->move(600, 260);
-    awesomeLabel2->move(600, 260);
-    goodLabel2->move(600, 260);
-    unbelievableLabel2->move(600, 260);
-    unbelievableLabel2->hide();
-    awesomeLabel2->hide();
-    goodLabel2->hide();
-    excellentLabel2->hide();
-    goodAnimation2 = new QPropertyAnimation(goodLabel2, "geometry");
-    goodAnimation2->setEasingCurve(QEasingCurve::InOutCubic);
-    goodAnimation2->setDuration(1000);
-    goodAnimation2->setStartValue(QRect(goodLabel2->x() + 216, goodLabel2->y(), 1, 1));
-    goodAnimation2->setEndValue(QRect(goodLabel2->x(), goodLabel2->y(), 216, 192));
-
-    awesomeAnimation2 = new QPropertyAnimation(awesomeLabel2, "geometry");
-    awesomeAnimation2->setEasingCurve(QEasingCurve::InOutCubic);
-    awesomeAnimation2->setDuration(1200);
-    awesomeAnimation2->setStartValue(QRect(awesomeLabel2->x() + 216, awesomeLabel2->y(), 1, 1));
-    awesomeAnimation2->setEndValue(QRect(awesomeLabel2->x(), awesomeLabel2->y(), 216, 193));
-
-    unbelievableAnimation2 = new QPropertyAnimation(unbelievableLabel2, "geometry");
-    unbelievableAnimation2->setEasingCurve(QEasingCurve::InOutCubic);
-    unbelievableAnimation2->setDuration(1600);
-    unbelievableAnimation2->setStartValue(QRect(unbelievableLabel2->x() + 231, unbelievableLabel2->y(), 1, 1));
-    unbelievableAnimation2->setEndValue(QRect(unbelievableLabel2->x(), unbelievableLabel2->y(), 231, 248));
-
-    excellentAnimation2 = new QPropertyAnimation(excellentLabel2, "geometry");
-    excellentAnimation2->setEasingCurve(QEasingCurve::InOutCubic);
-    excellentAnimation2->setDuration(1400);
-    excellentAnimation2->setStartValue(QRect(excellentLabel2->x() + 206, excellentLabel2->y(), 1, 1));
-    excellentAnimation2->setEndValue(QRect(excellentLabel2->x(), excellentLabel2->y(), 206, 150)); // normal size
-
-    QPalette palette;  //创建一个调色板的对象
-    QPixmap pixmap;
-    pixmap.load("D:/Bejeweled00/res/pictures/img.png");
-    palette.setBrush(backgroundRole(), QBrush(pixmap));
-    setPalette(palette);
-    pauseButton = new JewelButton();
-    deathLabel = new QLabel("DEATH", currentFrame);
-    deathLabel->setPalette(Qt::red);
-    deathLabel->hide();
-    setCentralWidget(currentFrame);
-    auto *under_frame = new QFrame(currentFrame);
-    auto *under_layout = new QGridLayout(under_frame);
-    auto *board = new QLabel(currentFrame);
-    auto *P1 = new QLabel(currentFrame);
-    P1->setPixmap(QPixmap("D:/Bejeweled00/res/pictures/P1.png"));
-    P1->move(0, 650);
-    auto *P2 = new QLabel(currentFrame);
-    P2->setPixmap(QPixmap("D:/Bejeweled00/res/pictures/P2.png"));
-    P2->move(1240, 650);
-    board->setPixmap(QPixmap("D:/Bejeweled00/res/pictures/img.png"));
-    board->setMinimumHeight(kJewelWidgetSize * (boardSize));
-    board->setMinimumWidth(kJewelWidgetSize * (boardSize));
-    board->setMaximumHeight(kJewelWidgetSize * (boardSize));
-    board->setMaximumWidth(kJewelWidgetSize * (boardSize));
-    auto *board2 = new QLabel(currentFrame);
-    board2->setMinimumHeight(kJewelWidgetSize * (boardSize));
-    board2->setMinimumWidth(kJewelWidgetSize * (boardSize));
-    board2->setMaximumHeight(kJewelWidgetSize * (boardSize));
-    board2->setMaximumWidth(kJewelWidgetSize * (boardSize));
-    board2->setPixmap(QPixmap("D:/Bejeweled00/res/pictures/img.png"));
-    QPalette blue_pa;
-    blue_pa.setColor(QPalette::WindowText, Qt::blue);
-    QPalette RED_pa;
-    RED_pa.setColor(QPalette::WindowText, Qt::red);
-    scoreDisplay2 = new QLabel(currentFrame);
-    scoreDisplay2->setFont(QFont("Microsoft YaHei", 15, 150));
-    scoreDisplay2->setPalette(RED_pa);
-    auto *label1 = new QLabel(tr("SCORE"), currentFrame);
-    auto *label2 = new QLabel(tr("SCORE"), currentFrame);
-    label1->setFont(QFont("Microsoft YaHei", 15, 150));
-    label1->setPalette(blue_pa);
-    label2->setFont(QFont("Microsoft YaHei", 15, 150));
-    label2->setPalette(RED_pa);
-    scoreDisplay = new QLabel(currentFrame);
-    scoreDisplay->resize(200, 100);
-    scoreDisplay->setFont(QFont("Microsoft YaHei", 15, 150));
-    scoreDisplay->setPalette(blue_pa);
-    auto *timeUsedLabel = new QLabel(tr("YOUR TIMEBAR"), currentFrame);
-    timeUsedLabel->setFont(QFont("Microsoft YaHei", 15, 150));
-    auto *exitButton = new JewelButton(under_frame);
-    exitButton->setText(tr("Exit"));
-    connect(exitButton, SIGNAL(clicked()), this, SLOT(exitClicked()));
-    resize(1400, 500);
-    //! /!初始化每个宝石的位置并赋予每个宝石发射信号的能力
-    for (int i = 0; i != boardSize; ++i)
-        for (int j = 0; j != boardSize; ++j) {
-            map_[i][j].second = new Jewel(Color::NONE, board);
-            map_[i][j].second->setGeometry(kJewelWidgetSize * j, kJewelWidgetSize * i, kJewelWidgetSize,
-                                           kJewelWidgetSize);
-            connect(map_[i][j].second, SIGNAL(Swap(Bejeweled::SwapDirection)), this, SLOT(
-                    onSwap(Bejeweled::SwapDirection)));
-            map2_[i][j].second = new Jewel(Color::NONE, board2);
-            map2_[i][j].second->setGeometry(kJewelWidgetSize * j, kJewelWidgetSize * i, kJewelWidgetSize,
-                                            kJewelWidgetSize);//P2不需发射信号
-        }
-    move(400, 100);
-    hintButton = new JewelButton(under_frame);
-    hintButton->setText(tr("Hint"));
-    connect(hintButton, SIGNAL(clicked()), this, SLOT(hintClicked()));
-    progressBar = new QProgressBar(this);
-    int len = this->width() / 100 * 6;
-    progressBar->setGeometry(this->width() / 20 * 7 + 20, this->height() - len, 10 * len - 40, len * 7 / 10 + 30);
-    progressBar->setRange(0, 99);
-    progressBar->setValue(0);
-    progressBar->setFormat("%p%");
-    progressBar->setAlignment(Qt::AlignCenter);
-    progressBar->setFont(QFont("Microsoft YaHei", 12, 100));
-    progressBar->setStyleSheet("QProgressBar{color:grey;} QProgressBar{border-image: url(D:\\Bejeweled00\\res\\pictures\\progressBar.jpg);}QProgressBar::chunk{background-color: rgb(60,179,113)}");
-    timeUsedLabel->resize(200, 100);
-    timeUsedLabel->move(580, 570);
-    under_layout->addWidget(new QLabel("", under_frame), 2, 0);
-    under_layout->addWidget(progressBar, 3, 0);
-    under_layout->addWidget(hintButton, 4, 0);
-    under_layout->addWidget(exitButton, 5, 0);
-    label1->move(590, 50);
-    label2->move(700, 50);
-    scoreDisplay->move(632, 100);
-    scoreDisplay->setAlignment(Qt::AlignRight);
-    auto *VS = new QLabel(currentFrame);
-    VS->setPixmap(QPixmap("D:/Bejeweled00/res/pictures/vs2.png"));
-    VS->move(530, 380);
-    scoreDisplay2->move(710, 65);
-    scoreDisplay2->resize(200, 100);
-    scoreDisplay->setAlignment(Qt::AlignLeft);
-    combo1Label = new QLabel("COMBO", currentFrame);
-    combo2Label = new QLabel("COMBO", currentFrame);
-    combo1Label->setPalette(bluePa);
-    combo2Label->setPalette(redPa);
-    combo1Label->setFont(QFont("Microsoft YaHei", 15, 150));
-    combo2Label->setFont(QFont("Microsoft YaHei", 15, 150));
-    combo1Display = new QLabel("", currentFrame);
-    combo2Display = new QLabel("", currentFrame);
-    combo1Display->setFont(QFont("Microsoft YaHei", 15, 150));
-    combo2Display->setFont(QFont("Microsoft YaHei", 15, 150));
-    combo1Label->move(590, 130);
-    combo1Display->move(610, 180);
-    combo1Display->resize(20, 20);
-    combo2Label->move(700, 130);
-    combo2Display->move(720, 180);
-    combo2Display->resize(20, 20);
-    board->move(10, 50);
-    board2->move(900, 50);
-    under_frame->move(200, 500);
-    under_frame->resize(1000, 300);
-    currentFrame->show();
-    drawBoardEvent(gameState->StartNewGame(seed));
-    drawBoardEvent2(gameState2->StartNewGame(seed));
-//!连接信号和槽
-    connect(gameState, SIGNAL(Hint(Bejeweled::JewelPos)), this, SLOT(updateHint(Bejeweled::JewelPos)));
-    //game emit->gameState->mainWindow , purpose:更新可行的宝石位置updateHint()
-    connect(gameState, SIGNAL(timeTick(int)), this, SLOT(updateTimeDisplay(int)));
-    //gameState->mainWindow , purpose:更新计时器QLabel updateTimeDisplay()
-    connect(gameState, SIGNAL(scoreUpdated(int)), this, SLOT(updateScore(int)));
-    //gameState->mainWindow, purpose:更新成绩QLabel updateScore()
-    connect(gameState2, SIGNAL(scoreUpdated(int)), this, SLOT(updateScore2(int)));
-//!连接信号和槽
-    if (sound_effect1)goSound->play();
-}
-//!网络Qt通信
-/**创建房间
- *
- */
-void MainWindow::createRoom() {
-    server = new QTcpServer();
-    port = rand() % 64511 + 1024;//todo:random
-    while (!server->listen(QHostAddress::Any, port)) {//监听开始
-        qDebug() << server->errorString();
-        QMessageBox::warning(this, "DEFEAT", "OCCUPIED PORT:" + QString::number(port) + "\nFINDING ANOTHER...");
-        port = rand() % 64511 + 1024;
-    };
-    QMessageBox::information(this, "SUCCESS", "PORT HAVE OPENED ON :" + QString::number(port));
-    connect(server, &QTcpServer::newConnection, this, &MainWindow::serverNewConnect);
-}
-void MainWindow::joinRoom(int roomNumber) {
-    socket = new QTcpSocket();
-    QObject::connect(socket, &QTcpSocket::readyRead, this, &MainWindow::socketReadData);
-    QObject::connect(socket, &QTcpSocket::disconnected, this, &MainWindow::socketDisconnected);
-    port = roomNumber;
-    socket->abort();
-    socket->connectToHost(IP, port);
-    if (!socket->waitForConnected(3000)) { QMessageBox::warning(this, "DEFEAT", "JOIN DEFEAT!"); }
-    else {
-        QMessageBox::information(this, "SUCCESS", "JOIN SUCCESS!");
-        readyDouble = true;
-    }
-
-}
-/**
- * 读取传输的数据
- */
-void MainWindow::socketReadData() {
-    QByteArray  buffer = socket->readAll();
-        string s = tr(buffer).toStdString();
-        processReadStr(s);
-}
-/**
- * 处理将要发送的数据
- */
-string MainWindow::processStrToSend(JewelPos pos, SwapDirection direction) {
-    int x = pos.x, y = pos.y;
-    string str;
-    if (x >= 10)str += to_string(x);
-    else str += "0" + to_string(x);
-    if (y >= 10)str += to_string(y);
-    else str += "0" + to_string(y);
-    switch (direction) {
-        case UP:
-            str += to_string(3);
-            break;
-        case RIGHT:
-            str += to_string(2);
-            break;
-        case DOWN:
-            str += to_string(4);
-            break;
-        case LEFT:
-            str += to_string(1);
-            break;
-    }
-    return str;
-}
-void MainWindow::socketDisconnected() {
-    QMessageBox::warning(this, "HINT", "The other man has disconnected!");
-    readyDouble = false;
-}
-/**
- * 被连接
- */
-void MainWindow::serverNewConnect() {
-    QMessageBox::warning(this, "HINT", "READY!");
-    readyDouble = true;
-    socket = server->nextPendingConnection();
-    QObject::connect(socket, &QTcpSocket::readyRead, this, &MainWindow::socketReadData);
-}
-/**
- * 加入房间
- */
-/**
- * slot
- * @param newScore
- */
-void MainWindow::updateScore(int newScore) {
-    scoreDisplay->setText(QString::number(newScore));
-    update();
-}
-
-void MainWindow::updateScore2(int newScore) {
-    scoreDisplay2->setText(QString::number(newScore));
-    update();
-}
-
-/**
- *数据结构上交换宝石
- * @param x 宝石的横坐标
- * @param y  纵坐标
- * @param direction 交换方向
- * @return  TRUE if success
- */
-bool MainWindow::swapJewelInMap(int x, int y, SwapDirection direction) {
-    // TODO animate it
-    switch (direction) {
-        case DOWN: {
-            if (x >= boardSize - 1)
-                return false;
-            const QRect tmp = map_[x][y].second->geometry();
-            const QRect tmp2 = map_[x + 1][y].second->geometry();
-            auto *animation2 = new QPropertyAnimation(map_[x + 1][y].second, "geometry",
-                                                      this);
-            animationDrawing = true;
-            auto *animation = new QPropertyAnimation(map_[x][y].second, "geometry", this);
-            animation->setDuration(300);
-            animation->setStartValue(tmp);
-            animation->setEndValue(QRect(tmp2));
-            animation->setEasingCurve(QEasingCurve::InQuad);
-            animation->start();
-            QTimer::singleShot(400, this, [=]() {
-                delete animation;
-            });
-            animation2->setDuration(300);
-            animation2->setStartValue(tmp2);//新位置的
-            animation2->setEndValue(QRect(tmp));
-            animation2->setEasingCurve(QEasingCurve::InQuad);
-            animation2->start();
-            QTimer::singleShot(400, this, [=]() {
-                delete animation2;
-            });
-            QTimer timer;
-            timer.setInterval(800);
-            timer.setSingleShot(true);
-            timer.start();
-            connect(&timer, &QTimer::timeout, [=]() {
-                animationDrawing = false;
-            });
-            while (animationDrawing)
-                QApplication::processEvents(QEventLoop::AllEvents);
-            Color tmpColor = map_[x + 1][y].first;
-            map_[x + 1][y].first = map_[x][y].first;
-            Jewel *temp = map_[x][y].second;//temp=first;
-            map_[x][y].second = map_[x + 1][y].second;//first=second
-            map_[x + 1][y].second = temp;//second=temp
-            map_[x][y].first = tmpColor;
-            break;
-        }
-        case UP: {
-            if (x <= 0)
-                return false;
-            const QRect tmp = map_[x][y].second->geometry();
-            const QRect tmp2 = map_[x - 1][y].second->geometry();
-            auto *animation2 = new QPropertyAnimation(map_[x - 1][y].second, "geometry",
-                                                      this);
-            animationDrawing = true;
-            animation2->setDuration(300);
-            animation2->setStartValue(tmp2);//新位置的
-            animation2->setEndValue(QRect(tmp));
-            animation2->setEasingCurve(QEasingCurve::InQuad);
-            animation2->start();
-            QTimer::singleShot(400, this, [=]() {
-                delete animation2;
-            });
-            auto *animation = new QPropertyAnimation(map_[x][y].second, "geometry",
-                                                     this);
-            animation->setDuration(300);
-            animation->setStartValue(tmp);
-            animation->setEndValue(QRect(tmp2));
-            animation->setEasingCurve(QEasingCurve::InQuad);
-            animation->start();
-            QTimer::singleShot(400, this, [=]() {
-                delete animation;
-            });
-            QTimer timer;
-            timer.setInterval(800);
-            timer.setSingleShot(true);
-            timer.start();
-            connect(&timer, &QTimer::timeout, [=]() {
-                animationDrawing = false;
-            });
-            while (animationDrawing)
-                QApplication::processEvents(QEventLoop::AllEvents);
-            Color tmpColor = map_[x - 1][y].first;
-            map_[x - 1][y].first = map_[x][y].first;
-            Jewel *temp = map_[x][y].second;//temp=first;
-            map_[x][y].second = map_[x - 1][y].second;//first=second
-            map_[x - 1][y].second = temp;//second=temp
-            map_[x][y].first = tmpColor;
-            break;
-        }
-        case LEFT: {
-            if (y <= 0)
-                return false;
-            const QRect tmp = map_[x][y].second->geometry();
-            const QRect tmp2 = map_[x][y - 1].second->geometry();
-            animationDrawing = true;
-            auto *animation = new QPropertyAnimation(map_[x][y].second, "geometry", this);
-            animation->setDuration(300);
-            animation->setStartValue(tmp);
-            animation->setEndValue(QRect(tmp2));
-            animation->setEasingCurve(QEasingCurve::InQuad);
-            animation->start();
-            QTimer::singleShot(400, this, [=]() {
-                delete animation;
-            });
-            auto *animation2 = new QPropertyAnimation(map_[x][y - 1].second, "geometry", this);
-            animation2->setDuration(300);
-            animation2->setStartValue(tmp2);//新位置的
-            animation2->setEndValue(QRect(tmp));
-            animation2->setEasingCurve(QEasingCurve::InQuad);
-            animation2->start();
-            QTimer::singleShot(400, this, [=]() {
-                delete animation2;
-            });
-            QTimer timer;
-            timer.setInterval(800);
-            timer.setSingleShot(true);
-            timer.start();
-            connect(&timer, &QTimer::timeout, [=]() {
-                animationDrawing = false;
-            });
-            while (animationDrawing)
-                QApplication::processEvents(QEventLoop::AllEvents);
-            Color tmpColor = map_[x][y - 1].first;
-            map_[x][y - 1].first = map_[x][y].first;
-            Jewel *temp = map_[x][y].second;//temp=first;
-            map_[x][y].second = map_[x][y - 1].second;//first=second
-            map_[x][y - 1].second = temp;//second=temp
-            map_[x][y].first = tmpColor;
-            break;
-        }
-
-        case RIGHT: {
-            if (y >= boardSize - 1)
-                return false;
-            const QRect tmp = map_[x][y].second->geometry();
-            const QRect tmp2 = map_[x][y + 1].second->geometry();
-            auto *animation2 = new QPropertyAnimation(map_[x][y + 1].second, "geometry",
-                                                      this);
-            animationDrawing = true;
-            animation2->setDuration(300);
-            animation2->setStartValue(tmp2);//新位置的
-            animation2->setEndValue(QRect(tmp));
-            animation2->setEasingCurve(QEasingCurve::InQuad);
-            animation2->start();
-            QTimer::singleShot(400, this, [=]() {
-                delete animation2;
-            });
-
-            auto *animation = new QPropertyAnimation(map_[x][y].second, "geometry",
-                                                     this);
-            animation->setDuration(300);
-            animation->setStartValue(tmp);
-            animation->setEndValue(QRect(tmp2));
-            animation->setEasingCurve(QEasingCurve::InQuad);
-            animation->start();
-            QTimer::singleShot(400, this, [=]() {
-                delete animation;
-            });
-            QTimer timer;
-            timer.setInterval(800);
-            timer.setSingleShot(true);
-            timer.start();
-            connect(&timer, &QTimer::timeout, [=]() {
-                animationDrawing = false;
-            });
-            while (animationDrawing)
-                QApplication::processEvents(QEventLoop::AllEvents);
-            Color tmpColor = map_[x][y + 1].first;
-            map_[x][y + 1].first = map_[x][y].first;
-            Jewel *temp = map_[x][y].second;//temp=first;
-            map_[x][y].second = map_[x][y + 1].second;//first=second
-            map_[x][y + 1].second = temp;//second=temp
-            map_[x][y].first = tmpColor;
-            break;
-        }
-        default:
-            return false;
-            break;
-    }
-    update();
-    return true;
-}
 
 bool MainWindow::swapJewelInMap2(int x, int y, SwapDirection direction) {
     // TODO animate it

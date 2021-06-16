@@ -80,32 +80,7 @@ list<BoardEvent> Game::Swap(JewelPos pos, Bejeweled::SwapDirection direction)
 
 	return events;
 }
-//list<BoardEvent> Game::Swap2(JewelPos pos, Bejeweled::SwapDirection direction)
-//{
-//    // update generation factor
-//    board->setGenerationFactor(modeLogic->getGeneration());
-//    list<BoardEvent> events = board->Swap(pos, direction);
-//    bool first = true; //Processing First BoardEvent
-//    for(const BoardEvent& event : events) {
-//        if(first && event.type == BoardEvent::DIE) {
-//            scoreSystem2->firstGain(event.getDiePos().size());
-//            emit(scoreUpdated(scoreSystem2->getScore()));
-//            first = false;
-//        }
-//        else if(!first && event.type == BoardEvent::DIE) {
-//            scoreSystem2->comboGain(event.getDiePos().size());
-//            emit(scoreUpdated(scoreSystem2->getScore()));
-//        }
-//    }
-//
-//    if(!events.empty()) { //not a fail swap
-//        modeLogic->FinishedOneMove();
-//        scoreSystem->finishMove();
-//    }
-//            emit(Hint(board->getPossibleSwap()));
-//
-//    return events;
-//}
+
 /**
  * 开启一局游戏,调用board的Init()方法,获得NEW事件,返回给gameState
  * @see board.h Init()

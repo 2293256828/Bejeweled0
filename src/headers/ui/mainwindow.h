@@ -119,6 +119,9 @@ private:
     QLabel *scoreDisplay2;
     QLabel *deathLabel;
     QLabel*pauseLabel;
+    QLabel*board;
+    QPropertyAnimation*boardOpenAnimation;
+    QPropertyAnimation*boardCloseAnimation;
     QPropertyAnimation*pauseAnimation;
     QPropertyAnimation*pauseAnimation2;
 	QProgressBar* progressBar;
@@ -168,8 +171,8 @@ private:
     QMediaPlayer*hit;
     QMediaPlayer*back;
     QMediaPlaylist *bgMusicList;
-     QMediaPlayer*bgplayer;
-     QMediaPlayer*gameBgPlayer;
+    QMediaPlayer*bgplayer;
+    QMediaPlayer*gameBgPlayer;
      //!Music
     //!ÍøÂç
     QTcpServer *server;
