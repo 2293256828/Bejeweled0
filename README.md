@@ -1,5 +1,6 @@
 # Bejeweled00
 Bejeweled
+ <a href="https://github.com/2293256828/Bejeweled-Server-Liunx">Liunx服务端</a>
 可联机VS的宝石迷阵
 基于oop思想,采用C++和QT 在CMake环境下开发
 实现了如下功能:
